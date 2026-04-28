@@ -1,0 +1,155 @@
+---
+title: C盘文件清理指南
+date: 2025-11-06 20:53:00
+cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/cd.png
+---
+
+# C盘文件清理指南
+
+## 临时文件清理
+
+> 风险程度：低
+
+`%TEMP%`是Windows系统临时文件的环境变量，直接作为指令执行可以打开当前系统的临时文件夹。
+
+键盘快捷键按下`WIN + R`，输入`%TEMP%`，打开的文件夹下的文件都是Windows的临时文件，可以安全删除。
+
+## 大文件清理：hiberfil.sys
+
+> 风险程度：低
+>
+> 影响：休眠功能
+
+hiberfil.sys：它将内存数据与会话数据保存到电脑硬盘、以便于断电重新启动后可以快速恢复会话所需的内存镜像文件。在离开计算机一段时间后，计算机将会进入休眠状态。一般情况它会占用很大存储空间。
+
+以管理员身份运行命令提示符，输入`powercfg -h off`，即可删除hiberfil.sys文件。
+
+如果后续想使用休眠功能，就用命令`powercfg -h on`开启。
+
+## 大文件清理：pagefile.sys
+
+> 风险程度：中
+>
+> 影响：虚拟内存
+
+pagefile.sys：它是操作系统的虚拟内存文件，如果你经常运行大型程序，不建议删除，不过可以移动到其他磁盘。
+
+进入设置-系统-高级系统设置-标签中选择高级-性能设置-高级-虚拟内存-更改
+
+![虚拟内存设置](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/Cdisk.png)
+
+![虚拟内存设置2](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/cd2.png)
+
+去掉自动管理所有驱动器分页文件大小的勾选，选择自定义大小，点击C盘，选择“无分页文件”，点击设置，最后点击确定即可。
+
+![虚拟内存设置3](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/cd3.png)
+
+D盘可以选择自定义大小，通常初始大小：等于物理内存（RAM），最大值：初始大小的1.5倍。
+
+## 大文件清理：windows.old
+
+> 风险程度：低
+>
+> 影响程度：回退系统版本
+
+windows.old：它是电脑在重装系统的过程中，备份旧系统中重要文件的文件夹，它位于新系统的C盘中。作用就是为了保留旧系统的文件。如果新系统有问题，就可以提取它里面的文件来替换整个系统或单个文件，如果你不需要，可以安心删除。
+
+右键点击C盘-属性-磁盘清理-清理系统文件，勾选“以前的Windows安装”。
+
+![windows.old清理](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/cd4.png)
+
+
+当然，与此同时也可以清理一些与临时文件和大文件，以释放更多的磁盘空间。
+
+在“其他选项”中，还可以选择清理“系统还原和卷影复制”，这将删除所有但最近的还原点。
+
+![系统还原和卷影复制](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/cd8.png)
+
+## 禁止传递优化
+
+> 风险程度：无
+
+传递优化不用多说，它允许用户将更新文件上传到其他计算机，以帮助加快更新速度。但这也会占用C盘空间。（也就是P2P）
+
+进入设置-更新和安全-传递优化，关闭“允许从其他计算机下载”即可。
+
+![传递优化](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/cd5.png)
+
+## 更改回收站设置
+
+> 风险程度：无
+
+Windows会为回收站保留 10% 左右的的可用空间。一旦达到阈值，系统将自动从最旧到最新删除文件。你可以调整系统应为回收站使用的空间量。
+
+打开回收站，选择“回收站属性”选项。改变C盘、D盘等驱动器的最大使用空间，点击“确定”即可。
+
+![回收站属性](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/cd6.png)
+
+## 移动用户文件夹
+
+> 风险程度：低
+
+用户文件夹（桌面、文档、下载、图片、音乐、视频）默认保存在C盘，可以将其移动到其他磁盘，以节省C盘空间。
+
+以“文档”文件夹为例，右键点击“文档”文件夹，选择“属性”-“位置”，点击“移动”，选择新的位置即可。
+
+![用户文件夹移动](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/cd7.png)
+
+## 启用存储感知
+
+> 风险程度：无
+
+存储感知可以自动删除不需要的文件，以释放磁盘空间。进入设置-系统-存储，开启“存储感知”即可。
+
+## 删除可选功能
+
+> 风险程度：低
+
+Windows 10和11附带了一些可选功能，如果不需要，可以将其删除以释放空间。
+
+打开设置，搜索“可选功能”，选择不需要的功能，点击“卸载”即可。
+
+![可选功能](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/cd9.png)
+
+## 软件卸载残留
+
+### 程序安装目录（主文件残留）
+
+*   **路径：**
+    *   `C:\Program Files\软件名称`
+    *   `C:\Program Files (x86)\软件名称` (32位软件通常在这里)
+*   检查这两个文件夹，如果发现该软件的文件夹依然存在，可以直接删除。
+
+### 用户数据文件夹（AppData）
+
+*   **路径（需要开启“显示隐藏文件”才能看到）：**
+    *   `C:\Users\你的用户名\AppData\Roaming\软件名称` (漫游数据，如软件设置)
+    *   `C:\Users\你的用户名\AppData\Local\软件名称` (本地数据，如缓存、临时文件)
+    *   `C:\Users\你的用户名\AppData\LocalLow\软件名称` (低权限数据)
+
+### Windows 注册表
+
+注册表是 Windows 的核心数据库，软件会在其中保存配置、序列号、文件关联等信息。残留的注册表项会导致系统变慢或无法重新安装同类软件。
+
+*   **主要位置：**
+    1.  `HKEY_CURRENT_USER\Software\软件开发商或软件名`
+    2.  `HKEY_LOCAL_MACHINE\SOFTWARE\软件开发商或软件名`
+    3.  `HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\软件开发商或软件名` (32位软件在64位系统上的注册表位置)
+*   **启动项残留：**
+    *   `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run`
+    *   `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run`
+
+### 系统临时文件夹
+
+*   **路径：**
+    *   `C:\Windows\Temp`
+    *   `C:\Users\你的用户名\AppData\Local\Temp`
+*   **操作建议：** 可以直接清空这两个文件夹里的内容（如果有文件正在被占用，系统会阻止删除，跳过即可）。
+
+### 系统驱动与系统目录
+
+如果软件包含驱动程序（如杀毒软件、虚拟光驱），痕迹会留在系统目录中。
+
+*   **路径：**
+    *   `C:\Windows\System32\drivers` (检查是否有相关的 .sys 文件)
+    *   `C:\Windows\System32` (检查相关的 .dll 文件)

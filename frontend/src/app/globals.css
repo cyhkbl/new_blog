@@ -1,0 +1,372 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #111111;
+  --primary-light: #4b4b4b;
+  --accent: #ffffff;
+  --accent-light: #f5f5f5;
+  --sky-blue: #ffffff;
+  --bg-base: #f8f8f7;
+  --bg-soft: #f0f0ee;
+  --bg-glass: rgba(255, 255, 255, 0.52);
+  --bg-glass-hover: rgba(255, 255, 255, 0.68);
+  --bg-glass-strong: rgba(255, 255, 255, 0.78);
+  --text-primary: #111111;
+  --text-secondary: #5c5c5c;
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --border-glow: rgba(255, 255, 255, 0.45);
+  --mouse-x: 50vw;
+  --mouse-y: 50vh;
+  --code-bg: #f4f4f5;
+  --code-border: #e4e4e7;
+}
+
+@theme inline {
+  --color-background: var(--bg-base);
+  --color-foreground: var(--text-primary);
+  --font-sans: "SimSun", "Songti SC", "STSong", "Noto Serif SC", serif;
+  --font-heading: "SimSun", "Songti SC", "STSong", "Noto Serif SC", serif;
+  --font-body: "SimSun", "Songti SC", "STSong", "Noto Serif SC", serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text-primary);
+  font-family: "SimSun", "Songti SC", "STSong", "Noto Serif SC", serif;
+  line-height: 1.7;
+  background: var(--bg-base);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.acrylic {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.mouse-glow {
+  background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.55), transparent 260px);
+}
+
+.star-dust {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.8);
+  animation: starFloat 12s ease-in-out infinite;
+}
+
+@keyframes starFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.9);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate3d(10px, -18px, 0) scale(1.15);
+    opacity: 1;
+  }
+}
+
+.page-shell {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.46));
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* ── Markdown prose styles ── */
+
+.md-prose h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin-top: 1.8em;
+  margin-bottom: 0.6em;
+  line-height: 1.3;
+}
+
+.md-prose h2 {
+  font-size: 1.6em;
+  font-weight: 700;
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+  line-height: 1.35;
+}
+
+.md-prose h3 {
+  font-size: 1.35em;
+  font-weight: 700;
+  margin-top: 1.4em;
+  margin-bottom: 0.45em;
+  line-height: 1.4;
+}
+
+.md-prose h4 {
+  font-size: 1.15em;
+  font-weight: 700;
+  margin-top: 1.2em;
+  margin-bottom: 0.4em;
+  line-height: 1.45;
+}
+
+.md-prose h5 {
+  font-size: 1.05em;
+  font-weight: 700;
+  margin-top: 1.1em;
+  margin-bottom: 0.35em;
+  line-height: 1.5;
+}
+
+.md-prose h6 {
+  font-size: 1em;
+  font-weight: 700;
+  margin-top: 1em;
+  margin-bottom: 0.3em;
+  line-height: 1.5;
+}
+
+.md-prose p {
+  text-indent: 2em;
+  margin-bottom: 1em;
+  line-height: 1.8;
+}
+
+.md-prose hr {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  margin: 2em 0;
+}
+
+/* ── Inline code ── */
+
+.md-prose code {
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
+  font-size: 0.88em;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  color: #d63384;
+  word-break: break-word;
+}
+
+/* ── Code block (collapsible) ── */
+
+.md-prose details.code-block {
+  margin: 1.2em 0;
+  border: 1px solid var(--code-border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.md-prose details.code-block summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 1em;
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
+  font-size: 0.82em;
+  color: var(--text-secondary);
+  background: #f0f0f2;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  border-bottom: 1px solid var(--code-border);
+}
+
+.md-prose details.code-block summary::-webkit-details-marker {
+  display: none;
+}
+
+.md-prose details.code-block summary::before {
+  content: "▶";
+  font-size: 0.7em;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.md-prose details.code-block[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.md-prose details.code-block summary .code-lang {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.md-prose details.code-block summary .code-hint {
+  margin-left: auto;
+  font-size: 0.9em;
+  opacity: 0.6;
+}
+
+.md-prose details.code-block pre {
+  margin: 0;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+  background: #fafafa;
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
+  font-size: 0.85em;
+  line-height: 1.6;
+  color: var(--text-primary);
+  white-space: pre;
+  tab-size: 2;
+}
+
+.md-prose details.code-block pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  border-radius: 0;
+}
+
+/* Preview: visible when collapsed, hidden when expanded */
+.md-prose details.code-block .code-preview {
+  padding: 0.8em 1.2em;
+  font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
+  font-size: 0.85em;
+  line-height: 1.6;
+  color: var(--text-primary);
+  white-space: pre;
+  overflow-x: auto;
+  position: relative;
+}
+
+.md-prose details.code-block .code-preview .code-fade {
+  display: block;
+  height: 2.4em;
+  background: linear-gradient(transparent, #fafafa);
+  pointer-events: none;
+}
+
+.md-prose details.code-block[open] .code-preview {
+  display: none;
+}
+
+/* ── Tables ── */
+
+.md-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 0.95em;
+}
+
+.md-prose th,
+.md-prose td {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.6em 1em;
+  text-align: left;
+}
+
+.md-prose th {
+  background: var(--code-bg);
+  font-weight: 600;
+}
+
+.md-prose tr:nth-child(even) td {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* ── Blockquote ── */
+
+.md-prose blockquote {
+  margin: 1.2em 0;
+  padding: 0.8em 1.2em;
+  border-left: 3px solid rgba(0, 0, 0, 0.15);
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 0 8px 8px 0;
+  color: var(--text-secondary);
+}
+
+.md-prose blockquote p {
+  text-indent: 0;
+  margin-bottom: 0.5em;
+}
+
+.md-prose blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Lists ── */
+
+.md-prose ul,
+.md-prose ol {
+  margin: 1em 0;
+  padding-left: 2em;
+}
+
+.md-prose li {
+  margin-bottom: 0.3em;
+  line-height: 1.7;
+}
+
+.md-prose li code {
+  font-size: 0.85em;
+}
+
+/* ── Images ── */
+
+.md-prose img {
+  margin: 1.2em auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Links ── */
+
+.md-prose a {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.md-prose a:hover {
+  opacity: 0.8;
+}
+
+/* ── Reading progress bar ── */
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #111111, #4b4b4b);
+  z-index: 100;
+  transition: width 0.1s linear;
+}
