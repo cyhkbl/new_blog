@@ -5,19 +5,19 @@ import { motion } from "framer-motion";
 const sites = [
   {
     name: "CS 学习站",
-    url: "https://cs.cyhkbl.top",
+    url: "https://cyhkbl.github.io/CS-Learning/",
     description: "计算机科学学习笔记与资源汇总",
     icon: "💻",
   },
   {
     name: "金融学习站",
-    url: "https://finance.cyhkbl.top",
+    url: "https://cyhkbl.github.io/Finance-Learning/",
     description: "金融市场、量化交易学习笔记",
     icon: "📈",
   },
   {
     name: "Life",
-    url: "https://life.cyhkbl.top",
+    url: "https://cyhkbl.github.io/Life/",
     description: "生活记录与随笔",
     icon: "🌿",
   },
@@ -25,12 +25,12 @@ const sites = [
 
 const container = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  show: { transition: { staggerChildren: 0.06 } },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
 };
 
 export default function SitesContent() {
