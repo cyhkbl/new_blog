@@ -1,7 +1,7 @@
 ---
 title: Piracy
 date: 2025-12-10 18:57:05
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/piracy.webp
+cover: /images/piracy.webp
 ---
 
 # Piracy

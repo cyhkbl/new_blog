@@ -1,7 +1,7 @@
 ---
 title: 使用Rclone多端备份文件
 date: 2026-02-07 13:59:20
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/rclone.png
+cover: /images/rclone.png
 ---
 
 # 使用Rclone多端备份文件

@@ -1,7 +1,7 @@
 ---
 title: Hexoの千层套路
 date: 2023-08-08 21:35:30
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/hexo.png
+cover: /images/hexo.png
 ---
 
 # Hexoの千层套路
@@ -36,7 +36,7 @@ git config --global user.email "你的GitHub注册邮箱"
 
 打开Github设置中的“SSH and GPG keys”页面，新建一个SSH Key并把id_rsa.pub密钥内容粘贴上去：
 
-![ssh_key](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/b9dDaT1h8juqB3R.png)
+![ssh_key](/images/b9dDaT1h8juqB3R.png)
 
 在你的博客文件夹内，找到根目录下的_config.yml文件，修改deploy中的内容：
 

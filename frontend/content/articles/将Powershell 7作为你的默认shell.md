@@ -1,7 +1,7 @@
 ---
 title: 将Powershell 7作为你的默认shell
 date: 2025-11-06 16:32:00
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/pwsh.png
+cover: /images/pwsh.png
 ---
 
 # 将Powershell 7作为你的默认shell

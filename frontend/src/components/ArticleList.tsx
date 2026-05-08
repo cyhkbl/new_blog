@@ -25,7 +25,7 @@ export default function ArticleList({
       variants={container}
       initial="hidden"
       animate="show"
-      className="flex flex-col gap-5"
+      className="flex flex-col gap-6"
     >
       {articles.map((article) => (
         <motion.div key={article.slug} variants={item}>
@@ -35,7 +35,7 @@ export default function ArticleList({
           >
             <div className="flex flex-col sm:flex-row">
               {article.cover && (
-                <div className="h-40 w-full shrink-0 overflow-hidden sm:h-auto sm:w-44">
+                <div className="h-52 w-full shrink-0 overflow-hidden sm:h-64 sm:w-96">
                   <img
                     src={article.cover}
                     alt={article.title}
@@ -43,28 +43,9 @@ export default function ArticleList({
                   />
                 </div>
               )}
-              <div className="flex-1 p-5">
-                <p className="text-sm text-black/40">
-                  {article.date}
-                </p>
-                <h2 className="mt-2 text-lg font-semibold leading-snug text-[var(--text-primary)]">
-                  {article.title}
-                </h2>
-                {article.tags && article.tags.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {article.tags.map((tag: string) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-black/10 bg-white/60 px-2.5 py-0.5 text-xs text-black/60"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <p className="mt-2.5 text-sm leading-relaxed text-black/50 line-clamp-2">
-                  {article.excerpt}
-                </p>
+              <div className="flex flex-1 flex-col justify-center p-8">
+                <p className="text-base text-black/40">{article.date}</p>
+                <h2 className="mt-3 text-xl font-semibold leading-snug text-[var(--text-primary)]">{article.title}</h2>
               </div>
             </div>
           </Link>

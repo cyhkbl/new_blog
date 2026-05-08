@@ -1,7 +1,7 @@
 ---
 title: scoop-windows的应用商店
 date: 2023-11-04 14:19:23
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/scoop.jpg
+cover: /images/scoop.jpg
 ---
 
 # scoop-windows的应用商店

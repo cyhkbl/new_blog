@@ -1,7 +1,7 @@
 ---
 title: 实战：NFC一卡通
 date: 2026-01-16 10:27:22
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/nfc.jpg
+cover: /images/nfc.jpg
 ---
 
 # 实战：NFC一卡通

@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const navLinks = [
   { href: "/articles", label: "文章" },
   { href: "/about", label: "关于我" },
-  { href: "/sites", label: "我的其它站点" },
+  { href: "/sites", label: "Links" },
 ];
 
 export default function Navbar() {

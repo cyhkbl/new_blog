@@ -1,7 +1,7 @@
 ---
 title: Firefox主页背景图片的添加
 date: 2022-08-04 16:18:28
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/firefox.png
+cover: /images/firefox.png
 ---
 
 # Firefox主页背景图片的添加

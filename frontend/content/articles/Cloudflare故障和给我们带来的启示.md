@@ -1,7 +1,7 @@
 ---
 title: Cloudflare故障和给我们带来的启示
 date: 2025-11-19 12:59:00
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/CF_logo.png
+cover: /images/CF_logo.png
 ---
 
 # Cloudflare故障和给我们带来的启示

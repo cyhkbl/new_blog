@@ -1,7 +1,7 @@
 ---
 title: Markdown基本语法
 date: 2022-08-04 14:33:38
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/markdown.png
+cover: /images/markdown.png
 ---
 
 # Markdown基本语法

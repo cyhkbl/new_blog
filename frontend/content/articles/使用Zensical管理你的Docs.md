@@ -1,7 +1,7 @@
 ---
 title: 使用Zensical管理你的Docs
 date: 2025-12-06 12:04:46
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/zensical.png
+cover: /images/zensical.png
 ---
 
 # 使用Zensical管理你的Docs
@@ -109,7 +109,7 @@ jobs:
 
 首先，创建一个仓库（例如 `cs-learning`），然后在仓库的设置中启用 GitHub Pages，选择部署来源为 `GitHub Actions` 。
 
-![启用 GitHub Pages](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/pages.png)
+![启用 GitHub Pages](/images/pages.png)
 
 完成后，GitHub 会为你提供一个站点 URL，例如 `https://cyhkbl.github.io/CS-learning/` 。
 

@@ -1,7 +1,7 @@
 ---
 title: 美化你的Terminal和Shell v2.0
 date: 2026-02-01 22:35:25
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/beautify.png
+cover: /images/beautify.png
 ---
 
 # 美化你的Terminal和Shell v2.0

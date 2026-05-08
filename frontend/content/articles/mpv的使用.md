@@ -1,7 +1,7 @@
 ---
 title: mpv的使用
 date: 2024-04-21 11:09:02
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed/mpv-logo.webp
+cover: /images/mpv-logo.webp
 ---
 
 # mpv的使用

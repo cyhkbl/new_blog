@@ -1,7 +1,7 @@
 ---
 title: Homelab搭建
 date: 2025-12-28 16:11:24
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/homelab.jpg
+cover: /images/homelab.jpg
 ---
 
 # Homelab搭建

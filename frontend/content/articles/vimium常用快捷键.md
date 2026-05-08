@@ -1,7 +1,7 @@
 ---
 title: vimium常用快捷键
 date: 2022-08-11 14:34:34
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/vim.png
+cover: /images/vim.png
 ---
 
 # vimium常用快捷键

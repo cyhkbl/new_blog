@@ -1,7 +1,7 @@
 ---
 title: （转载）为什么 LLM 仅预测下一词，就能「涌现」出高级能力？
 date: 2026-01-05 12:41:48
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/gemini.jpg
+cover: /images/gemini.jpg
 ---
 
 # （转载）为什么 LLM 仅预测下一词，就能「涌现」出高级能力？

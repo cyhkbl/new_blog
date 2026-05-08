@@ -1,7 +1,7 @@
 ---
 title: Android手机连接WiFi不调用系统浏览器的方法
 date: 2025-11-02 14:47:00
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/v2-487cb6cf22441f3552bdf7608ef370f7_1440w.png
+cover: /images/v2-487cb6cf22441f3552bdf7608ef370f7_1440w.png
 ---
 
 # Android手机连接WiFi不调用系统浏览器的方法

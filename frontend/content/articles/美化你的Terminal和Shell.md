@@ -1,7 +1,7 @@
 ---
 title: 美化你的Terminal和Shell
 date: 2023-11-04 14:35:37
-cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/20231104143817.png
+cover: /images/20231104143817.png
 ---
 
 # 美化你的Terminal和Shell
@@ -101,7 +101,7 @@ cover: https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/20231104143817.png
 
 设置完成效果：
 
-![Windows Terminal效果图](https://cdn.jsdelivr.net/gh/cyhkbl/picture_bed@main/shell.png)
+![Windows Terminal效果图](/images/shell.png)
 
 ### oh-my-posh美化你的Shell
 
