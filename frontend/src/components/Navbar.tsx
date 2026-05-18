@@ -21,30 +21,27 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close menu on route change
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
-
-  const isHome = pathname === "/";
-  const textColor = isHome
-    ? "text-white"
-    : scrolled
-      ? "text-[var(--text-primary)]"
-      : "text-[var(--text-primary)]";
 
   return (
     <nav
       className={`flex items-center justify-between px-6 py-4 transition-all duration-300 ${
         scrolled
           ? "bg-white/70 backdrop-blur-2xl saturate-180 shadow-sm border-b border-black/5"
-          : isHome
-            ? "bg-black/20 backdrop-blur-xl saturate-150"
-            : "bg-white/50 backdrop-blur-2xl saturate-180 border-b border-black/5"
+          : "bg-white/50 backdrop-blur-2xl saturate-180 border-b border-black/5"
       }`}
     >
-      <Link href="/" className={`text-sm font-semibold tracking-wider transition ${textColor}`}>
-        空白棱的小站
+      <Link href="/" className="flex items-center gap-2.5">
+        <img
+          src="/images/avatar_without_background.png"
+          alt="头像"
+          className="h-7 w-7 rounded-full object-cover"
+        />
+        <span className="text-sm font-semibold tracking-wider transition text-[var(--text-primary)]">
+          空白棱的小站
+        </span>
       </Link>
 
       {/* Desktop nav */}
@@ -57,12 +54,8 @@ export default function Navbar() {
               href={href}
               className={`rounded-full px-4 py-1.5 text-sm transition-all ${
                 active
-                  ? isHome
-                    ? "bg-white/20 text-white font-medium"
-                    : "bg-black/8 text-[var(--text-primary)] font-medium"
-                  : isHome
-                    ? "text-white/70 hover:text-white hover:bg-white/10"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5"
+                  ? "bg-black/8 text-[var(--text-primary)] font-medium"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-black/5"
               }`}
             >
               {label}
@@ -77,9 +70,9 @@ export default function Navbar() {
         onClick={() => setMenuOpen(!menuOpen)}
         aria-label="菜单"
       >
-        <span className={`block h-0.5 w-5 rounded-full transition-all duration-300 ${textColor} ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
-        <span className={`block h-0.5 w-5 rounded-full transition-all duration-300 ${textColor} ${menuOpen ? "opacity-0" : ""}`} />
-        <span className={`block h-0.5 w-5 rounded-full transition-all duration-300 ${textColor} ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+        <span className={`block h-0.5 w-5 rounded-full transition-all duration-300 bg-[var(--text-primary)] ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
+        <span className={`block h-0.5 w-5 rounded-full transition-all duration-300 bg-[var(--text-primary)] ${menuOpen ? "opacity-0" : ""}`} />
+        <span className={`block h-0.5 w-5 rounded-full transition-all duration-300 bg-[var(--text-primary)] ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
       </button>
 
       {/* Mobile menu overlay */}

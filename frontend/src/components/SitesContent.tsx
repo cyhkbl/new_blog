@@ -80,6 +80,8 @@ const friendCategories: LinkCategory[] = [
 const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
 const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } } };
 
+const cardClass = "group block rounded-2xl border border-white/60 bg-white/55 p-6 shadow-sm backdrop-blur-2xl saturate-180 transition-all cursor-pointer hover:bg-white/65 hover:shadow-lg";
+
 function FriendAvatar({ src, name }: { src: string; name: string }) {
   if (!src) return <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/10 text-sm font-bold text-black/40">{name.charAt(0)}</div>;
   return <img src={src} alt={name} className="h-10 w-10 rounded-full object-cover" onError={(e) => { const t = e.target as HTMLImageElement; t.style.display = "none"; const f = document.createElement("div"); f.className = "flex h-10 w-10 items-center justify-center rounded-full bg-black/10 text-sm font-bold text-black/40"; f.textContent = name.charAt(0); t.parentNode?.insertBefore(f, t); }} />;
@@ -92,7 +94,7 @@ export default function SitesContent() {
       <h2 className="mb-4 text-lg font-semibold text-[var(--text-primary)]">我的其它站点</h2>
       <motion.div variants={container} initial="hidden" animate="show" className="mb-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {mySites.map((site) => (
-          <motion.a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" variants={item} whileHover={{ scale: 1.03, transition: { duration: 0.2 } }} className="glass group block p-6 transition-all cursor-pointer hover:shadow-lg">
+          <motion.a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" variants={item} whileHover={{ scale: 1.03, transition: { duration: 0.2 } }} className={cardClass}>
             <div className="text-3xl mb-3">{site.icon}</div>
             <h3 className="text-lg font-semibold text-[var(--text-primary)] group-hover:text-black transition">{site.name}</h3>
             <p className="mt-2 text-sm text-black/50 leading-relaxed">{site.description}</p>
@@ -104,7 +106,7 @@ export default function SitesContent() {
           <h2 className="mb-4 text-lg font-semibold text-[var(--text-primary)]">{category.title}</h2>
           <motion.div variants={container} initial="hidden" animate="show" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {category.links.map((site) => (
-              <motion.a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" variants={item} whileHover={{ scale: 1.03, transition: { duration: 0.2 } }} className="glass group block p-6 transition-all cursor-pointer hover:shadow-lg">
+              <motion.a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" variants={item} whileHover={{ scale: 1.03, transition: { duration: 0.2 } }} className={cardClass}>
                 <div className="mb-3"><FriendAvatar src={site.avatar} name={site.name} /></div>
                 <h3 className="text-lg font-semibold text-[var(--text-primary)] group-hover:text-black transition">{site.name}</h3>
                 {site.description && <p className="mt-2 text-sm text-black/50 leading-relaxed">{site.description}</p>}

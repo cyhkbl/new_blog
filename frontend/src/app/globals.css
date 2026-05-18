@@ -57,16 +57,21 @@ a {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.glass:hover {
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .acrylic {
-  background: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
   border: 1px solid rgba(0, 0, 0, 0.06);
@@ -109,24 +114,24 @@ a {
 /* ── Markdown prose styles ── */
 
 .md-prose h1 {
-  font-size: 2em;
-  font-weight: 700;
+  font-size: 2.2em;
+  font-weight: 800;
   margin-top: 1.8em;
   margin-bottom: 0.6em;
   line-height: 1.3;
 }
 
 .md-prose h2 {
-  font-size: 1.6em;
-  font-weight: 700;
+  font-size: 1.8em;
+  font-weight: 800;
   margin-top: 1.6em;
   margin-bottom: 0.5em;
   line-height: 1.35;
 }
 
 .md-prose h3 {
-  font-size: 1.35em;
-  font-weight: 700;
+  font-size: 1.5em;
+  font-weight: 800;
   margin-top: 1.4em;
   margin-bottom: 0.45em;
   line-height: 1.4;
@@ -134,7 +139,7 @@ a {
 
 .md-prose h4 {
   font-size: 1.15em;
-  font-weight: 700;
+  font-weight: 800;
   margin-top: 1.2em;
   margin-bottom: 0.4em;
   line-height: 1.45;
@@ -142,7 +147,7 @@ a {
 
 .md-prose h5 {
   font-size: 1.05em;
-  font-weight: 700;
+  font-weight: 800;
   margin-top: 1.1em;
   margin-bottom: 0.35em;
   line-height: 1.5;
@@ -150,7 +155,7 @@ a {
 
 .md-prose h6 {
   font-size: 1em;
-  font-weight: 700;
+  font-weight: 800;
   margin-top: 1em;
   margin-bottom: 0.3em;
   line-height: 1.5;
@@ -185,10 +190,10 @@ a {
 
 .md-prose details.code-block {
   margin: 1.2em 0;
-  border: 1px solid var(--code-border);
+  border: 1px solid #30363d;
   border-radius: 10px;
   overflow: hidden;
-  background: #fafafa;
+  background: #0d1117;
 }
 
 .md-prose details.code-block summary {
@@ -198,12 +203,12 @@ a {
   padding: 0.5em 1em;
   font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
   font-size: 0.82em;
-  color: var(--text-secondary);
-  background: #f0f0f2;
+  color: #8b949e;
+  background: #161b22;
   cursor: pointer;
   user-select: none;
   list-style: none;
-  border-bottom: 1px solid var(--code-border);
+  border-bottom: 1px solid #30363d;
 }
 
 .md-prose details.code-block summary::-webkit-details-marker {
@@ -215,6 +220,7 @@ a {
   font-size: 0.7em;
   transition: transform 0.2s ease;
   flex-shrink: 0;
+  color: #8b949e;
 }
 
 .md-prose details.code-block[open] summary::before {
@@ -223,24 +229,42 @@ a {
 
 .md-prose details.code-block summary .code-lang {
   font-weight: 600;
-  color: var(--text-primary);
+  color: #e6edf3;
 }
 
 .md-prose details.code-block summary .code-hint {
-  margin-left: auto;
   font-size: 0.9em;
   opacity: 0.6;
+}
+
+.md-prose details.code-block summary .code-copy-btn {
+  margin-left: auto;
+  padding: 0.2em 0.7em;
+  font-size: 0.82em;
+  font-family: inherit;
+  color: #8b949e;
+  background: #21262d;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.md-prose details.code-block summary .code-copy-btn:hover {
+  color: #e6edf3;
+  background: #30363d;
+  border-color: #8b949e;
 }
 
 .md-prose details.code-block pre {
   margin: 0;
   padding: 1em 1.2em;
   overflow-x: auto;
-  background: #fafafa;
+  background: #0d1117;
   font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
   font-size: 0.85em;
   line-height: 1.6;
-  color: var(--text-primary);
+  color: #e6edf3;
   white-space: pre;
   tab-size: 2;
 }
@@ -260,7 +284,7 @@ a {
   font-family: "JetBrains Mono", "Fira Code", "Consolas", "Monaco", monospace;
   font-size: 0.85em;
   line-height: 1.6;
-  color: var(--text-primary);
+  color: #e6edf3;
   white-space: pre;
   overflow-x: auto;
   position: relative;
@@ -269,7 +293,7 @@ a {
 .md-prose details.code-block .code-preview .code-fade {
   display: block;
   height: 2.4em;
-  background: linear-gradient(transparent, #fafafa);
+  background: linear-gradient(transparent, #0d1117);
   pointer-events: none;
 }
 
@@ -324,8 +348,14 @@ a {
 
 /* ── Lists ── */
 
-.md-prose ul,
+.md-prose ul {
+  list-style: disc;
+  margin: 1em 0;
+  padding-left: 2em;
+}
+
 .md-prose ol {
+  list-style: decimal;
   margin: 1em 0;
   padding-left: 2em;
 }

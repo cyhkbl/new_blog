@@ -20,13 +20,9 @@ export default function AboutContent() {
       animate="show"
       className="mx-auto flex w-full max-w-4xl justify-center"
     >
-      <motion.div variants={item} className="glass w-full p-8 md:p-10">
+      <motion.div variants={item} className="w-full rounded-2xl border border-white/60 bg-white/55 p-8 shadow-sm backdrop-blur-2xl saturate-180 md:p-10">
         <div className="flex flex-col gap-6 md:flex-row md:items-center">
-          <div className="relative mx-auto h-36 w-36 rounded-full bg-[conic-gradient(from_90deg,rgba(244,114,182,0.95),rgba(125,211,252,0.85),rgba(167,139,250,0.95),rgba(244,114,182,0.95))] p-[3px]">
-            <div className="h-full w-full rounded-full bg-white p-2">
-              <img src="/images/avatar.png" alt="头像" className="h-full w-full rounded-full object-cover" />
-            </div>
-          </div>
+          <img src="/images/avatar_without_background.png" alt="头像" className="mx-auto h-36 w-36 rounded-full object-cover" />
           <div className="text-center md:text-left">
             <h1 className="text-3xl font-bold">空白棱</h1>
             <p className="mt-3 text-base leading-relaxed text-black/70">

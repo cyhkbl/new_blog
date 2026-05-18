@@ -31,7 +31,7 @@ export default function ArticleList({
         <motion.div key={article.slug} variants={item}>
           <Link
             href={`/articles/${encodeURIComponent(article.slug)}`}
-            className="glass group block overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg"
+            className="group block overflow-hidden rounded-2xl border border-white/60 bg-white/55 shadow-sm backdrop-blur-2xl saturate-180 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/65 hover:shadow-lg"
           >
             <div className="flex flex-col sm:flex-row">
               {article.cover && (

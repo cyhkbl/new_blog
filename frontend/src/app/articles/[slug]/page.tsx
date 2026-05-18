@@ -1,6 +1,54 @@
 import { notFound } from "next/navigation";
+import hljs from "highlight.js/lib/core";
+import bash from "highlight.js/lib/languages/bash";
+import python from "highlight.js/lib/languages/python";
+import javascript from "highlight.js/lib/languages/javascript";
+import typescript from "highlight.js/lib/languages/typescript";
+import css from "highlight.js/lib/languages/css";
+import json from "highlight.js/lib/languages/json";
+import xml from "highlight.js/lib/languages/xml";
+import yaml from "highlight.js/lib/languages/yaml";
+import markdown from "highlight.js/lib/languages/markdown";
+import c from "highlight.js/lib/languages/c";
+import cpp from "highlight.js/lib/languages/cpp";
+import java from "highlight.js/lib/languages/java";
+import go from "highlight.js/lib/languages/go";
+import rust from "highlight.js/lib/languages/rust";
+import sql from "highlight.js/lib/languages/sql";
+import dockerfile from "highlight.js/lib/languages/dockerfile";
+import ini from "highlight.js/lib/languages/ini";
+import diff from "highlight.js/lib/languages/diff";
 
 import { getArticleBySlug } from "@/lib/articles";
+import "highlight.js/styles/github-dark.css";
+
+hljs.registerLanguage("bash", bash);
+hljs.registerLanguage("sh", bash);
+hljs.registerLanguage("shell", bash);
+hljs.registerLanguage("python", python);
+hljs.registerLanguage("py", python);
+hljs.registerLanguage("javascript", javascript);
+hljs.registerLanguage("js", javascript);
+hljs.registerLanguage("typescript", typescript);
+hljs.registerLanguage("ts", typescript);
+hljs.registerLanguage("css", css);
+hljs.registerLanguage("json", json);
+hljs.registerLanguage("xml", xml);
+hljs.registerLanguage("html", xml);
+hljs.registerLanguage("yaml", yaml);
+hljs.registerLanguage("yml", yaml);
+hljs.registerLanguage("markdown", markdown);
+hljs.registerLanguage("md", markdown);
+hljs.registerLanguage("c", c);
+hljs.registerLanguage("cpp", cpp);
+hljs.registerLanguage("c++", cpp);
+hljs.registerLanguage("java", java);
+hljs.registerLanguage("go", go);
+hljs.registerLanguage("rust", rust);
+hljs.registerLanguage("sql", sql);
+hljs.registerLanguage("dockerfile", dockerfile);
+hljs.registerLanguage("ini", ini);
+hljs.registerLanguage("diff", diff);
 
 export default async function ArticleDetailPage({
   params,
@@ -15,32 +63,31 @@ export default async function ArticleDetailPage({
   }
 
   return (
-    <article className="mx-auto w-full max-w-3xl">
-      <header className="mb-8">
-        <p className="text-sm text-black/40">{article.date}</p>
-        <h1 className="mt-3 text-3xl font-bold leading-tight md:text-4xl">
-          {article.title}
-        </h1>
-        {article.tags && article.tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {article.tags.map((tag: string) => (
-              <span
-                key={tag}
-                className="rounded-full border border-black/10 bg-white/60 px-3 py-1 text-xs text-black/60"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
-      </header>
+    <article className="mx-auto w-full max-w-4xl">
+      <div className="rounded-2xl border border-white/60 bg-white/55 p-8 shadow-sm backdrop-blur-2xl saturate-180 md:p-12">
+        <header className="mb-8">
+          <p className="text-sm text-black/40">{article.date}</p>
+          {article.tags && article.tags.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {article.tags.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-black/10 bg-white/60 px-3 py-1 text-xs text-black/60"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
 
-      <div className="md-prose text-black/80">
-        <div
-          dangerouslySetInnerHTML={{
-            __html: simpleMarkdownToHtml(article.content),
-          }}
-        />
+        <div className="md-prose text-black/80">
+          <div
+            dangerouslySetInnerHTML={{
+              __html: simpleMarkdownToHtml(article.content),
+            }}
+          />
+        </div>
       </div>
     </article>
   );
@@ -55,19 +102,35 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#39;");
 }
 
+const CODE_PH = "\u0000CODE";
+
 function formatInline(text: string): string {
-  return escapeHtml(text)
+  const codeSnippets: string[] = [];
+  let result = escapeHtml(text);
+
+  // 1. Extract inline code into placeholders (highest priority)
+  result = result.replace(/`([^`]+)`/g, (_, code) => {
+    codeSnippets.push(`<code>${code}</code>`);
+    return `${CODE_PH}${codeSnippets.length - 1}\u0000`;
+  });
+
+  // 2. Process images, links, bold, italic on the remaining text
+  result = result
     .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>')
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/\*\*\*([^*]+)\*\*\*/g, "<strong><em>$1</em></strong>")
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
     .replace(/\*([^*]+)\*/g, "<em>$1</em>");
+
+  // 3. Restore code placeholders
+  result = result.replace(new RegExp(`${CODE_PH}(\\d+)\u0000`, "g"), (_, i) => codeSnippets[parseInt(i)]);
+
+  return result;
 }
 
 function isTableSeparator(line: string): boolean {
   const trimmed = line.trim();
-  return /^\|?(\s*:?-+:?\s*\|)+\s*:?-+:?\s*\|?$/.test(trimmed);
+  return /^\|?(?:\s*:?-+:?\s*\|)+\s*:?-+:?\s*$/.test(trimmed);
 }
 
 function renderTable(lines: string[]): string {
@@ -84,25 +147,42 @@ function renderTable(lines: string[]): string {
 
 const CODE_PREVIEW_LINES = 6;
 
+function highlightCode(code: string, language: string): string {
+  // Skip markdown — hljs strips frontmatter (---) from code blocks, leaving empty output
+  if (language === "md" || language === "markdown") return escapeHtml(code);
+  if (language && hljs.getLanguage(language)) {
+    try {
+      const result = hljs.highlight(code, { language }).value;
+      if (result.trim()) return result;
+    } catch {
+      // fall through
+    }
+  }
+  return escapeHtml(code);
+}
+
 function renderCodeBlock(codeLines: string[], language: string): string {
-  const langAttr = language ? ` class="language-${escapeHtml(language)}"` : "";
   const langText = language ? escapeHtml(language) : "code";
+  const rawCode = codeLines.join("\n");
+  const highlighted = highlightCode(rawCode, language);
+  const langAttr = language ? ` class="language-${escapeHtml(language)} hljs"` : ' class="hljs"';
+  const copyBtn = `<button class="code-copy-btn" onclick="navigator.clipboard.writeText(this.closest('.code-block').querySelector('code').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy'},1500)})">Copy</button>`;
 
   if (codeLines.length <= CODE_PREVIEW_LINES) {
-    const summary = `<summary><span class="code-lang">${langText}</span></summary>`;
-    const code = `<pre><code${langAttr}>${escapeHtml(codeLines.join("\n"))}</code></pre>`;
+    const summary = `<summary><span class="code-lang">${langText}</span>${copyBtn}</summary>`;
+    const code = `<pre><code${langAttr}>${highlighted}</code></pre>`;
     return `<details class="code-block" open>${summary}${code}</details>`;
   }
 
-  const summary = `<summary><span class="code-lang">${langText}</span><span class="code-hint">${codeLines.length} lines</span></summary>`;
+  const summary = `<summary><span class="code-lang">${langText}</span><span class="code-hint">${codeLines.length} lines</span>${copyBtn}</summary>`;
   const previewLines = codeLines.slice(0, CODE_PREVIEW_LINES);
   const preview = `<div class="code-preview">${escapeHtml(previewLines.join("\n"))}<span class="code-fade"></span></div>`;
-  const fullCode = `<pre><code${langAttr}>${escapeHtml(codeLines.join("\n"))}</code></pre>`;
+  const fullCode = `<pre><code${langAttr}>${highlighted}</code></pre>`;
   return `<details class="code-block">${summary}${preview}${fullCode}</details>`;
 }
 
 function simpleMarkdownToHtml(md: string): string {
-  const content = md.replace(/^---[\s\S]*?---\n*/m, "").replace(/\r\n/g, "\n");
+  const content = md.replace(/\r\n/g, "\n");
   const lines = content.split("\n");
   const html: string[] = [];
   let i = 0;
@@ -165,8 +245,11 @@ function simpleMarkdownToHtml(md: string): string {
 
     if (/^[-*+]\s+/.test(trimmed)) {
       const items: string[] = [];
-      while (i < lines.length && /^[-*+]\s+/.test(lines[i].trim())) {
-        items.push(`<li>${formatInline(lines[i].trim().replace(/^[-*+]\s+/, ""))}</li>`);
+      while (i < lines.length) {
+        const ln = lines[i].trim();
+        if (!ln) { i += 1; continue; }
+        if (!/^[-*+]\s+/.test(ln)) break;
+        items.push(`<li>${formatInline(ln.replace(/^[-*+]\s+/, ""))}</li>`);
         i += 1;
       }
       html.push(`<ul>${items.join("")}</ul>`);
@@ -175,11 +258,37 @@ function simpleMarkdownToHtml(md: string): string {
 
     if (/^\d+\.\s+/.test(trimmed)) {
       const items: string[] = [];
-      while (i < lines.length && /^\d+\.\s+/.test(lines[i].trim())) {
-        items.push(`<li>${formatInline(lines[i].trim().replace(/^\d+\.\s+/, ""))}</li>`);
+      while (i < lines.length) {
+        const ln = lines[i].trim();
+        if (!ln) { i += 1; continue; }
+        if (!/^\d+\.\s+/.test(ln)) break;
+        items.push(`<li>${formatInline(ln.replace(/^\d+\.\s+/, ""))}</li>`);
         i += 1;
       }
       html.push(`<ol>${items.join("")}</ol>`);
+      continue;
+    }
+
+    // Raw HTML block tags (details, summary, div, table, etc.) — pass through as-is
+    if (/^<(details|summary|div|table|section|article|aside|nav|header|footer|figure|figcaption|iframe)\b/i.test(trimmed)) {
+      const tag = trimmed.match(/^<(\w+)/)?.[1]?.toLowerCase() || "";
+      const block: string[] = [lines[i]];
+      const closeTag = `</${tag}>`;
+      const isSelfClosing = trimmed.endsWith("/>") || /^<(br|hr|img|input)\b/i.test(trimmed);
+      i += 1;
+      if (!isSelfClosing) {
+        let depth = 1;
+        while (i < lines.length && depth > 0) {
+          const cur = lines[i].trim();
+          if (new RegExp(`^<${tag}\\b`, "i").test(cur)) depth++;
+          if (cur.toLowerCase().startsWith(closeTag)) depth--;
+          block.push(lines[i]);
+          if (depth === 0) break;
+          i += 1;
+        }
+      }
+      i += 1;
+      html.push(block.join("\n"));
       continue;
     }
 
