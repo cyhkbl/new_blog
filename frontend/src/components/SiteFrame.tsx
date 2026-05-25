@@ -23,9 +23,10 @@ export default function SiteFrame({
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isSocial = pathname === "/social";
   const bgImage = getBgImage(pathname);
 
-  if (isHome) {
+  if (isHome || isSocial) {
     return <>{children}</>;
   }
 

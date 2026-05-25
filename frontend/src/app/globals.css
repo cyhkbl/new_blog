@@ -182,7 +182,7 @@ a {
   border: 1px solid var(--code-border);
   border-radius: 4px;
   padding: 0.15em 0.4em;
-  color: #d63384;
+  color: #7b5c6a;
   word-break: break-word;
 }
 
@@ -380,9 +380,8 @@ a {
 /* ── Links ── */
 
 .md-prose a {
-  color: #2563eb;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  color: #5b6f92;
+  text-decoration: none;
 }
 
 .md-prose a:hover {
@@ -399,4 +398,16 @@ a {
   background: linear-gradient(90deg, #111111, #4b4b4b);
   z-index: 100;
   transition: width 0.1s linear;
+}
+
+/* ── Math (KaTeX) ── */
+
+.md-prose .math-block {
+  margin: 1.2em 0;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.md-prose .math-inline .katex {
+  font-size: 1em;
 }

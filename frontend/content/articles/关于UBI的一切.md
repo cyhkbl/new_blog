@@ -1,7 +1,7 @@
 ---
 title: 关于UBI的一切
 date: 2026-02-12 16:53:37
-cover:
+cover: /images/ubi.webp
 ---
 
 # 关于UBI的一切

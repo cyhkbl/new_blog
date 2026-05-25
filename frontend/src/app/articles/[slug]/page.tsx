@@ -19,6 +19,8 @@ import dockerfile from "highlight.js/lib/languages/dockerfile";
 import ini from "highlight.js/lib/languages/ini";
 import diff from "highlight.js/lib/languages/diff";
 
+import katex from "katex";
+import "katex/dist/katex.min.css";
 import { getArticleBySlug } from "@/lib/articles";
 import "highlight.js/styles/github-dark.css";
 
@@ -93,6 +95,42 @@ export default async function ArticleDetailPage({
   );
 }
 
+const MATH_BLOCK_PH = "\u0000MATHBLOCK";
+const MATH_INLINE_PH = "\u0000MATHINLINE";
+
+function extractMathBlocks(md: string): { processed: string; blocks: string[] } {
+  const blocks: string[] = [];
+  // Extract $$...$$ block math
+  let processed = md.replace(/\$\$([\s\S]*?)\$\$/g, (_, math) => {
+    blocks.push(math.trim());
+    return `${MATH_BLOCK_PH}${blocks.length - 1}\u0000`;
+  });
+  // Extract $...$ inline math (not preceded/followed by $)
+  processed = processed.replace(/(?<!\$)\$(?!\$)([^\n$]+?)\$(?!\$)/g, (_, math) => {
+    blocks.push(math.trim());
+    return `${MATH_INLINE_PH}${blocks.length - 1}\u0000`;
+  });
+  return { processed, blocks };
+}
+
+function renderMathBlocks(html: string, blocks: string[]): string {
+  return html.replace(
+    new RegExp(`${MATH_BLOCK_PH}(\\d+)\u0000`, "g"),
+    (_, i) => {
+      try {
+        return `<div class="math-block">${katex.renderToString(blocks[parseInt(i)], { displayMode: true, throwOnError: false })}</div>`;
+      } catch { return blocks[parseInt(i)]; }
+    }
+  ).replace(
+    new RegExp(`${MATH_INLINE_PH}(\\d+)\u0000`, "g"),
+    (_, i) => {
+      try {
+        return `<span class="math-inline">${katex.renderToString(blocks[parseInt(i)], { displayMode: false, throwOnError: false })}</span>`;
+      } catch { return blocks[parseInt(i)]; }
+    }
+  );
+}
+
 function escapeHtml(value: string): string {
   return value
     .replaceAll("&", "&amp;")
@@ -130,7 +168,7 @@ function formatInline(text: string): string {
 
 function isTableSeparator(line: string): boolean {
   const trimmed = line.trim();
-  return /^\|?(?:\s*:?-+:?\s*\|)+\s*:?-+:?\s*$/.test(trimmed);
+  return /^\|?(?:\s*:?-+:?\s*\|)+\s*:?-+:?\s*\|?\s*$/.test(trimmed);
 }
 
 function renderTable(lines: string[]): string {
@@ -182,7 +220,8 @@ function renderCodeBlock(codeLines: string[], language: string): string {
 }
 
 function simpleMarkdownToHtml(md: string): string {
-  const content = md.replace(/\r\n/g, "\n");
+  const { processed: mdExtracted, blocks: mathBlocks } = extractMathBlocks(md);
+  const content = mdExtracted.replace(/\r\n/g, "\n");
   const lines = content.split("\n");
   const html: string[] = [];
   let i = 0;
@@ -315,5 +354,5 @@ function simpleMarkdownToHtml(md: string): string {
     html.push(`<p>${formatInline(paragraph.join("\n"))}</p>`);
   }
 
-  return html.join("\n");
+  return renderMathBlocks(html.join("\n"), mathBlocks);
 }
