@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 
 import Navbar from "@/components/Navbar";
@@ -42,7 +43,18 @@ export default function SiteFrame({
         <div className="fixed inset-0 -z-10 bg-[var(--bg-base)]" />
       )}
       <Navbar />
-      <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={pathname}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="mx-auto max-w-5xl px-6 py-10"
+        >
+          {children}
+        </motion.main>
+      </AnimatePresence>
     </div>
   );
 }

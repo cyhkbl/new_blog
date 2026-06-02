@@ -1,11 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 const mySites = [
-  { name: "CS 学习站", url: "https://cyhkbl.github.io/CS-Learning/", description: "计算机科学学习笔记与资源汇总", icon: "💻" },
-  { name: "金融学习站", url: "https://cyhkbl.github.io/Finance-Learning/", description: "金融市场、量化交易学习笔记", icon: "📈" },
-  { name: "Life", url: "https://cyhkbl.github.io/Life/", description: "生活记录与随笔", icon: "🌿" },
+  { name: "CS 学习站", url: "https://cyhkbl.qzz.io/CS-Learning", description: "计算机科学学习笔记与资源汇总", icon: "💻" },
+  { name: "金融学习站", url: "https://cyhkbl.qzz.io/Finance-Learning/", description: "金融市场、量化交易学习笔记", icon: "📈" },
+  { name: "Life", url: "https://cyhkbl.qzz.io/Life/", description: "生活记录与随笔", icon: "🌿" },
 ];
 
 interface FriendLink { name: string; url: string; avatar: string; description: string; }
@@ -77,10 +77,18 @@ const friendCategories: LinkCategory[] = [
   },
 ];
 
-const container = { hidden: {}, show: { transition: { staggerChildren: 0.06 } } };
-const item = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } } };
 
-const cardClass = "group block rounded-2xl border border-white/60 bg-white/55 p-6 shadow-sm backdrop-blur-2xl saturate-180 transition-all cursor-pointer hover:bg-white/65 hover:shadow-lg";
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0 } },
+};
+
+const item = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.4, ease: "easeOut" as const } },
+};
+
+const cardClass = "group block rounded-2xl border border-white/60 bg-white/55 p-6 shadow-sm backdrop-blur-2xl saturate-180 transition-all duration-300 cursor-pointer hover:bg-white/65 hover:shadow-md";
 
 function FriendAvatar({ src, name }: { src: string; name: string }) {
   if (!src) return <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/10 text-sm font-bold text-black/40">{name.charAt(0)}</div>;
@@ -94,7 +102,7 @@ export default function SitesContent() {
       <h2 className="mb-4 text-lg font-semibold text-[var(--text-primary)]">我的其它站点</h2>
       <motion.div variants={container} initial="hidden" animate="show" className="mb-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {mySites.map((site) => (
-          <motion.a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" variants={item} whileHover={{ scale: 1.03, transition: { duration: 0.2 } }} className={cardClass}>
+          <motion.a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" variants={item} className={cardClass}>
             <div className="text-3xl mb-3">{site.icon}</div>
             <h3 className="text-lg font-semibold text-[var(--text-primary)] group-hover:text-black transition">{site.name}</h3>
             <p className="mt-2 text-sm text-black/50 leading-relaxed">{site.description}</p>
@@ -106,7 +114,7 @@ export default function SitesContent() {
           <h2 className="mb-4 text-lg font-semibold text-[var(--text-primary)]">{category.title}</h2>
           <motion.div variants={container} initial="hidden" animate="show" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {category.links.map((site) => (
-              <motion.a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" variants={item} whileHover={{ scale: 1.03, transition: { duration: 0.2 } }} className={cardClass}>
+              <motion.a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer" variants={item} className={cardClass}>
                 <div className="mb-3"><FriendAvatar src={site.avatar} name={site.name} /></div>
                 <h3 className="text-lg font-semibold text-[var(--text-primary)] group-hover:text-black transition">{site.name}</h3>
                 {site.description && <p className="mt-2 text-sm text-black/50 leading-relaxed">{site.description}</p>}

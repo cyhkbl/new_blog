@@ -49,7 +49,7 @@ export default function SocialContent() {
             href={link.url}
             target={link.url.startsWith("/") ? undefined : "_blank"}
             rel={link.url.startsWith("/") ? undefined : "noopener noreferrer"}
-            className="flex w-full items-center gap-3 rounded-xl border border-white/60 bg-white/55 px-5 py-3.5 shadow-sm backdrop-blur-2xl saturate-180 transition hover:border-black/10 hover:bg-white/70"
+            className="flex w-full items-center gap-3 rounded-xl border border-white/60 bg-white/55 px-5 py-3.5 shadow-sm backdrop-blur-2xl saturate-180 transition-all duration-300 hover:-translate-y-0.5 hover:border-black/10 hover:bg-white/70 hover:shadow-md"
           >
             <span className="text-xl">{link.icon}</span>
             <span className="text-sm font-medium text-black/80">{link.label}</span>
