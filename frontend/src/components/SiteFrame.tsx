@@ -9,6 +9,7 @@ const bgMap: Record<string, string> = {
   "/about": "/images/about_wallpaper.png",
   "/articles": "/images/article_wallpaper.png",
   "/sites": "/images/links_wallpaper.png",
+  "/social": "/images/linktree-wallpaper.jpg",
 };
 
 function getBgImage(pathname: string): string | null {
@@ -24,10 +25,9 @@ export default function SiteFrame({
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const isSocial = pathname === "/social";
   const bgImage = getBgImage(pathname);
 
-  if (isHome || isSocial) {
+  if (isHome) {
     return <>{children}</>;
   }
 
@@ -50,8 +50,7 @@ export default function SiteFrame({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-5xl px-6 py-10"
-        >
+          className="mx-auto max-w-5xl px-6 py-10">
           {children}
         </motion.main>
       </AnimatePresence>
