@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const mySites = [
   { name: "CS 学习站", url: "https://cyhkbl.qzz.io/CS-Learning", description: "计算机科学学习笔记与资源汇总", icon: "💻" },

@@ -53,8 +53,15 @@ export function getAllArticles(): ArticleMeta[] {
   });
 
   return articles
-    .sort((a, b) => (b as any)._sortKey.localeCompare((a as any)._sortKey))
-    .map(({ _sortKey, ...rest }) => rest);
+    .sort((a, b) => b._sortKey.localeCompare(a._sortKey))
+    .map((article) => ({
+      slug: article.slug,
+      title: article.title,
+      date: article.date,
+      excerpt: article.excerpt,
+      cover: article.cover,
+      tags: article.tags,
+    }));
 }
 
 export function getArticleBySlug(slug: string) {
