@@ -88,7 +88,7 @@ sudo systemctl restart blog    # 如果是 systemd 服务
 
 ## 四、修改 Scholar 页面
 
-Scholar 页面记录学术经历、研究项目、获奖和课程技能，页面地址：
+Scholar 页面记录学术经历、研究项目、获奖和技术栈，外观参考 `https://mem.ac/` 的学术主页布局，页面地址：
 
 ```
 https://cyhkbl.qzz.io/Scholar
@@ -97,7 +97,7 @@ https://cyhkbl.qzz.io/Scholar
 主要编辑这个文件：
 
 ```
-~/new_blog/frontend/src/components/ScholarContent.tsx
+~/new_blog/frontend/src/components/ScholarAcademicContent.tsx
 ```
 
 路由文件在：
@@ -106,11 +106,19 @@ https://cyhkbl.qzz.io/Scholar
 ~/new_blog/frontend/src/app/Scholar/page.tsx
 ```
 
+`/Scholar` 使用独立的全屏学术主页外壳，不套博客默认背景图和顶栏。相关特判在：
+
+```
+~/new_blog/frontend/src/components/SiteFrame.tsx
+```
+
 常见修改位置：
 
 | 要改什么 | 怎么改 |
 |---|---|
 | 学术概览 | 改 `highlights` 数组 |
+| 个人链接 | 改 `profileLinks` 数组 |
+| 教育经历 | 改 `educationTimeline` 数组 |
 | 研究经历时间线 | 改 `researchTimeline` 数组 |
 | 项目经历 | 改 `projectCards` 数组 |
 | 获奖/服务 | 改 `awards` 数组 |

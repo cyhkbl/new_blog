@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import ScholarContent from "@/components/ScholarContent";
+import ScholarAcademicContent from "@/components/ScholarAcademicContent";
 
 export const metadata: Metadata = {
   title: "Scholar | 空白棱的小站",
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function ScholarPage() {
-  return <ScholarContent />;
+  return <ScholarAcademicContent />;
 }

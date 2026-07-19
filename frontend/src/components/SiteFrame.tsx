@@ -8,7 +8,6 @@ import Navbar from "@/components/Navbar";
 const bgMap: Record<string, string> = {
   "/about": "/images/about_wallpaper.png",
   "/articles": "/images/article_wallpaper.png",
-  "/Scholar": "/images/about_wallpaper.png",
   "/sites": "/images/links_wallpaper.png",
   "/social": "/images/linktree-wallpaper.jpg",
 };
@@ -26,10 +25,27 @@ export default function SiteFrame({
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
+  const isScholar = pathname === "/Scholar";
   const bgImage = getBgImage(pathname);
 
   if (isHome) {
     return <>{children}</>;
+  }
+
+  if (isScholar) {
+    return (
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={pathname}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="min-h-screen">
+          {children}
+        </motion.main>
+      </AnimatePresence>
+    );
   }
 
   return (
