@@ -86,26 +86,87 @@ sudo systemctl restart blog    # 如果是 systemd 服务
 
 ---
 
-## 四、修改网站名称和导航
+## 四、修改 Scholar 页面
 
-编辑：`~/new_blog/frontend/src/lib/constants.ts`
+Scholar 页面记录学术经历、研究项目、获奖和课程技能，页面地址：
+
+```
+https://cyhkbl.qzz.io/Scholar
+```
+
+主要编辑这个文件：
+
+```
+~/new_blog/frontend/src/components/ScholarContent.tsx
+```
+
+路由文件在：
+
+```
+~/new_blog/frontend/src/app/Scholar/page.tsx
+```
+
+常见修改位置：
+
+| 要改什么 | 怎么改 |
+|---|---|
+| 学术概览 | 改 `highlights` 数组 |
+| 研究经历时间线 | 改 `researchTimeline` 数组 |
+| 项目经历 | 改 `projectCards` 数组 |
+| 获奖/服务 | 改 `awards` 数组 |
+| 课程与技能 | 改 `coursework` 数组 |
+
+改完后执行：
+
+```bash
+cd ~/new_blog/frontend
+pnpm build
+sudo systemctl restart blog.service
+```
+
+---
+
+## 五、修改网站名称和导航
+
+网站标题和描述在：
+
+```
+~/new_blog/frontend/src/lib/constants.ts
+```
 
 ```typescript
 export const siteConfig = {
   name: "空白棱的小站",            // ← 网站标题
   description: "技术 · 金融 · 生活 · 二次元",  // ← 副标题
-  navItems: [                      // ← 导航栏
-    { href: "/", label: "首页" },
-    { href: "/articles", label: "文章" },
-    { href: "/about", label: "关于我" },
-    { href: "/sites", label: "我的其它站点" },
-  ],
 };
+```
+
+顶部导航实际在：
+
+```
+~/new_blog/frontend/src/components/Navbar.tsx
+```
+
+修改 `navLinks` 数组即可：
+
+```typescript
+const navLinks = [
+  { href: "/articles", label: "文章" },
+  { href: "/Scholar", label: "Scholar" },
+  { href: "/about", label: "关于我" },
+  { href: "/sites", label: "Links" },
+];
+```
+
+内页背景图映射在：
+
+```
+~/new_blog/frontend/src/components/SiteFrame.tsx
 ```
 
 ---
 
-## 五、上传图片
+## 六、上传图片
 
 图片统一放在：`~/new_blog/frontend/public/images/`
 
@@ -131,18 +192,18 @@ cover: /images/封面.jpg
 
 ---
 
-## 六、删除文章
+## 七、删除文章
 
 直接删除 `content/articles/` 下的 `.md` 文件即可：
 
 ```bash
 rm ~/new_blog/frontend/content/articles/"要删的文章.md"
-cd ~/new_blog/frontend && pnpm build && sudo systemctl restart blog
+cd ~/new_blog/frontend && pnpm build && sudo systemctl restart blog.service
 ```
 
 ---
 
-## 七、本地预览（可选）
+## 八、本地预览（可选）
 
 如果你想在本地改完预览再部署：
 
@@ -155,7 +216,7 @@ pnpm dev
 
 ---
 
-## 八、常用命令速查
+## 九、常用命令速查
 
 ```bash
 # SSH 登录
@@ -171,17 +232,17 @@ nano content/articles/"标题.md"
 pnpm build
 
 # 重启服务（视你部署方式）
-sudo systemctl restart blog
+sudo systemctl restart blog.service
 # 或 pm2 restart blog
 # 或 pnpm start
 
 # 查看服务状态
-sudo systemctl status blog
+sudo systemctl status blog.service
 ```
 
 ---
 
-## 九、文章 frontmatter 完整字段
+## 十、文章 frontmatter 完整字段
 
 ```yaml
 ---
