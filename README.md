@@ -114,7 +114,9 @@ https://cyhkbl.qzz.io/Scholar
 | 研究经历时间线 | 改 `researchTimeline` 数组 |
 | 项目经历 | 改 `projectCards` 数组 |
 | 获奖/服务 | 改 `awards` 数组 |
-| 课程与技能 | 改 `coursework` 数组 |
+| 活动/实践 | 改 `activityGroups` 数组 |
+| 研究方向 | 改 `interests` 数组 |
+| 技术栈 | 改 `techStack` 数组 |
 
 改完后执行：
 

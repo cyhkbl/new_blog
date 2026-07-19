@@ -19,21 +19,29 @@ const highlights = [
   {
     label: "Current",
     value: "ZJU BME",
-    detail: "浙江大学生物医学工程",
+    detail: "浙江大学生物医学工程与仪器科学学院 · 2025.09 - 至今",
   },
   {
     label: "GPA",
-    value: "4.53 / 5.00",
+    value: "4.44 / 5.00",
     detail: "大一阶段课程表现",
   },
   {
     label: "Focus",
-    value: "BME x AI",
-    detail: "生理信号、医学 AI、基础模型",
+    value: "BME x AI x Systems",
+    detail: "生理信号、医学 AI、具身智能、金融工程",
   },
 ];
 
 const researchTimeline = [
+  {
+    period: "2025.09 - Present",
+    title: "本科教育",
+    org: "浙江大学 · 生物医学工程专业",
+    description:
+      "当前就读于浙江大学生物医学工程与仪器科学学院，方向上持续向医学 AI、生理信号处理与系统工程靠拢。",
+    tags: ["BME", "Medical AI", "Systems"],
+  },
   {
     period: "2026.06 - Present",
     title: "NeuroFM",
@@ -47,56 +55,137 @@ const researchTimeline = [
     title: "计算药物设计方向早期科研训练",
     org: "浙江大学侯廷军课题组",
     description:
-      "完成早期科研训练后，将后续主线转向生物医学工程中的生理信号、医学影像与 AI 交叉方向。",
+      "完成蛋白-配体对接、分子描述符与图神经网络虚拟筛选等早期科研训练后，将后续主线转向生物医学工程中的生理信号、医学影像与 AI 交叉方向。",
     tags: ["Research training", "AIDD", "Scientific workflow"],
-  },
-  {
-    period: "2025 - Present",
-    title: "Biomedical Engineering",
-    org: "Zhejiang University",
-    description:
-      "当前就读于浙江大学生物医学工程与仪器科学学院生物医学工程专业，长期关注 BME 与计算机科学的交叉。",
-    tags: ["Biomedical engineering", "Medical AI", "Neuroengineering"],
   },
 ];
 
 const projectCards = [
   {
-    title: "生理信号基础模型",
-    subtitle: "NeuroFM",
-    text: "参考 masked modeling 与 Transformer 表征学习路线，目标是在睡眠分期、运动想象、心律异常等任务上形成统一的生理信号建模框架。",
+    title: "VitalPulse",
+    subtitle: "便携式生理信号实时监测系统",
+    text: "基于 ESP32 和 MAX30102 的便携式心率/血氧监测系统，覆盖串口 CSV、WiFi Web 热点与 BLE GATT 三种输出模式。",
   },
   {
-    title: "ECG 信号处理",
-    subtitle: "MIT-BIH",
-    text: "围绕 MIT-BIH 心电数据做滤波、预处理与分类 baseline，为后续多模态生理信号项目积累工程基础。",
+    title: "MIT-BIH",
+    subtitle: "心电信号处理与分析",
+    text: "完成 ECG 信号处理流水线，包括 Butterworth 带通滤波、R 峰检测、心率计算与异常心律识别。",
   },
   {
-    title: "端侧生理信号采集",
-    subtitle: "ESP32 / MAX30102",
-    text: "基于嵌入式硬件做生理信号采集与端侧 demo 探索，补足 BME 项目中从数据到设备的工程闭环。",
+    title: "Meridian",
+    subtitle: "A股市场经纪商引擎",
+    text: "从零构建 A 股经纪商撮合引擎，覆盖订单生命周期、FIX 4.4、A 股交易规则、风控 DSL 与 TWAP/VWAP 算法订单。",
+  },
+  {
+    title: "RoverMind",
+    subtitle: "ROS2 具身智能机器人平台",
+    text: "基于 ROS2 Humble + Gazebo Ignition 的机器人平台，包含差速底盘、LiDAR 避障、P 控制与 Claude API 意图解析。",
+  },
+  {
+    title: "MedDistill",
+    subtitle: "医学教材知识蒸馏与 RAG",
+    text: "将厚重教材蒸馏至核心知识并构建知识图谱，支持文档解析、跨教材语义对齐与混合检索问答。",
+  },
+  {
+    title: "TechPolicyBoard",
+    subtitle: "科技政策智能分析仪表盘",
+    text: "面向科技政策研究构建交互式分析平台，覆盖政策时间线、产业链视图、市场反应时滞和 Agent 引导式探索。",
+  },
+  {
+    title: "数学建模",
+    subtitle: "浙超分组与赛制优化",
+    text: "用 CP-SAT、模拟退火、Monte Carlo 和 Bradley-Terry 模型处理 64 支队伍的分组、抽签、场馆选址与赛制比较。",
+  },
+  {
+    title: "Shell Market Protocol",
+    subtitle: "P2P 多智能体服务拍卖网络",
+    text: "为 AgentNetwork 构建密封反向拍卖、信誉账本、清算协议、争议裁决与 SSE 实时行情推送。",
+  },
+  {
+    title: "行情/公告数据管道",
+    subtitle: "AkShare / Streamlit",
+    text: "基于 AkShare 建立行情采集、数据质量检查、指标计算与 Streamlit 看板。",
   },
 ];
 
 const awards = [
   {
-    title: "HPCWEEK 新生奖",
-    meta: "浙江大学",
-    description: "本科早期获得的计算与工程相关奖项。",
+    title: "浙江大学优秀团员",
+    meta: "2026.06",
+    description: "校级团员荣誉。",
   },
   {
-    title: "志愿服务 80h+",
-    meta: "Campus Service",
-    description: "持续参与校内志愿服务与公共事务。",
+    title: "浙江大学求是学院“公益之星”",
+    meta: "2026.06",
+    description: "公益与志愿服务相关荣誉。",
+  },
+  {
+    title: "浙江大学AI全栈黑客松第6名",
+    meta: "2025.05",
+    description: "AI 工程实践类竞赛成绩。",
+  },
+  {
+    title: "HPCWEEK 新生奖",
+    meta: "2025.11",
+    description: "浙江大学第一届高性能计算竞赛新生奖。",
+  },
+  {
+    title: "高中化学奥林匹克竞赛浙江省预赛三等奖",
+    meta: "2024.04",
+    description: "化学奥赛省预赛奖项。",
+  },
+  {
+    title: "第37届中国化学奥林匹克（初赛）三等奖",
+    meta: "2023.11",
+    description: "高中阶段化学竞赛奖项。",
   },
 ];
 
-const coursework = [
-  "Biomedical Engineering",
-  "UC Berkeley CS61A",
-  "Embodied Intelligence",
-  "Finance minor coursework",
-  "Linux / Systems practice",
+const activityGroups = [
+  {
+    title: "Student Work",
+    items: ["蓝田学院党员素质发展中心干事", "启真交叉学科创新创业实验室软件团队营员"],
+  },
+  {
+    title: "Service & Practice",
+    items: ["志愿服务累计 80+ 小时", "2025-2026 学年新时代“使命担当”铸魂工程社会实践"],
+  },
+  {
+    title: "Social Activities",
+    items: [
+      "FLUX 南客松 S2",
+      "2026 ROS 春季学校",
+      "SGLang AI 大模型推理的工程实践全景",
+      "Trae Friends Vibe Coding 实战",
+    ],
+  },
+];
+
+const interests = [
+  "神经信号处理与脑机接口（BCI）",
+  "生理信号基础模型",
+  "自监督预训练",
+  "具身智能与机器人控制",
+  "医学影像 AI",
+];
+
+const techStack = [
+  "Python",
+  "C/C++",
+  "TypeScript",
+  "PyTorch",
+  "FastAPI",
+  "SQLAlchemy 2.0",
+  "React",
+  "ROS2 Humble",
+  "MNE-Python",
+  "Google OR-Tools",
+  "Docker",
+  "Kafka",
+  "Redis",
+  "Linux",
+  "Git",
+  "LaTeX",
 ];
 
 export default function ScholarContent() {
@@ -133,7 +222,7 @@ export default function ScholarContent() {
 
       <motion.section variants={item} className={`${cardClass} p-6 md:p-8`}>
         <div className="mb-6 flex items-center justify-between gap-4">
-          <h2 className="text-xl font-semibold text-[var(--text-primary)]">Research Timeline</h2>
+          <h2 className="text-xl font-semibold text-[var(--text-primary)]">Academic Timeline</h2>
           <span className="hidden h-px flex-1 bg-black/10 sm:block" />
         </div>
         <div className="flex flex-col gap-5">
@@ -189,13 +278,44 @@ export default function ScholarContent() {
         </div>
 
         <div className={`${cardClass} p-6 md:p-8`}>
-          <h2 className="text-xl font-semibold text-[var(--text-primary)]">Coursework & Skills</h2>
-          <div className="mt-5 flex flex-wrap gap-2">
-            {coursework.map((course) => (
-              <span key={course} className="rounded-full border border-black/10 bg-white/45 px-3 py-1.5 text-sm text-black/60">
-                {course}
-              </span>
+          <h2 className="text-xl font-semibold text-[var(--text-primary)]">Activities & Practice</h2>
+          <div className="mt-5 flex flex-col gap-4">
+            {activityGroups.map((group) => (
+              <div key={group.title} className="border-t border-black/8 pt-4 first:border-t-0 first:pt-0">
+                <h3 className="text-base font-semibold text-[var(--text-primary)]">{group.title}</h3>
+                <ul className="mt-3 space-y-2 text-sm leading-6 text-black/60">
+                  {group.items.map((itemText) => (
+                    <li key={itemText}>• {itemText}</li>
+                  ))}
+                </ul>
+              </div>
             ))}
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.section variants={item} className={`${cardClass} p-6 md:p-8`}>
+        <h2 className="text-xl font-semibold text-[var(--text-primary)]">Research Interests & Stack</h2>
+        <div className="mt-5 space-y-5">
+          <div>
+            <p className="text-sm font-medium text-black/45">Research Interests</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {interests.map((interest) => (
+                <span key={interest} className="rounded-full bg-black/5 px-3 py-1.5 text-sm text-black/60">
+                  {interest}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-black/45">Technical Stack</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {techStack.map((skill) => (
+                <span key={skill} className="rounded-full border border-black/10 bg-white/45 px-3 py-1.5 text-sm text-black/60">
+                  {skill}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </motion.section>
