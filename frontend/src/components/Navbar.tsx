@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 
 const navLinks = [
   { href: "/articles", label: "文章" },
+  { href: "/Scholar", label: "Scholar" },
   { href: "/about", label: "关于我" },
   { href: "/sites", label: "Links" },
 ];
@@ -21,10 +22,6 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
 
   return (
     <nav
@@ -107,6 +104,7 @@ export default function Navbar() {
               <Link
                 key={href}
                 href={href}
+                onClick={() => setMenuOpen(false)}
                 className={`rounded-xl px-4 py-3 text-sm transition-all duration-300  ${
                   active
                     ? "bg-black/8 text-[var(--text-primary)] font-medium"

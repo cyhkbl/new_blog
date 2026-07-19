@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 const bgMap: Record<string, string> = {
   "/about": "/images/about_wallpaper.png",
   "/articles": "/images/article_wallpaper.png",
+  "/Scholar": "/images/about_wallpaper.png",
   "/sites": "/images/links_wallpaper.png",
   "/social": "/images/linktree-wallpaper.jpg",
 };
