@@ -1,113 +1,44 @@
 class DataFetcher {
     constructor() {
+        // 参考站点用 OpenCC 把简体查询再转一份港繁，iTunes 港区对繁体命中率更高。
+        // 脚本没加载成功时退化成原样返回，不影响搜索。
+        this.toHongKongTraditional = window.OpenCC?.Converter
+            ? window.OpenCC.Converter({ from: 'cn', to: 'hk' })
+            : (text) => text;
     }
 
     /**
-     * Searches for songs on Last.fm
+     * 搜索 iTunes。接口不需要 key，每条结果自带 artworkUrl100，比 Last.fm 靠谱：
+     * Last.fm 的公共 demo key 会限流，而且不少中文歌的 album 是 [unknown]、封面全是空串。
      *
      * @private
-     * @param {string} name
+     * @param {string} term
+     * @param {'artistTerm' | 'songTerm' | null} attribute
      * @param {number} limit
-     * @returns {Song[]} an array of Song objects
+     * @returns {Promise<object[]>}
      */
-    async getSongInfos(name, limit = 1) {
-        const query = name;
+    async searchItunes(term, attribute, limit) {
+        const params = new URLSearchParams({
+            term,
+            country: 'HK',
+            media: 'music',
+            entity: 'song',
+            limit: String(limit),
+        });
 
-        const apiKey = 'b362b9a7f5f0c5a7f749d568b68bc32a';
-        const searchUrl = `https://ws.audioscrobbler.com/2.0/?method=track.search&track=${encodeURIComponent(query)}&api_key=${apiKey}&format=json&limit=${limit}`;
-
-        let tracks = [];
-
-        try {
-            const response = await fetch(searchUrl);
-            const result = await response.json();
-            tracks = result?.results?.trackmatches?.track || [];
-        } catch (error) {
-            console.error('Last.fm search failed', error);
+        if (attribute) {
+            params.set('attribute', attribute);
         }
 
-        // Last.fm 用的是公共 demo key，偶尔会限流或者直接连不上。
-        // 这时候退回 iTunes 搜索，免得用户看到空白的结果列表。
-        if (tracks.length === 0) {
-            return this.searchItunes(query, limit);
-        }
-
-        const songs = await Promise.all(tracks.map(async (searchTrack) => {
-            try {
-                const infoUrl = `https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=${apiKey}&artist=${encodeURIComponent(searchTrack.artist)}&track=${encodeURIComponent(searchTrack.name)}&format=json`;
-                const infoResponse = await fetch(infoUrl, {
-                    headers: {
-                        'User-Agent': 'Application LyricPost/1.0 (pogromca.ap@gmail.com)',
-                    },
-                });
-                const infoResult = await infoResponse.json();
-
-                if (infoResult.track) {
-                    const song = new Song(infoResult.track);
-
-                    if (!song.albumCoverUrl) {
-                        song.albumCoverUrl = await this.getArtworkUrl(
-                            searchTrack.artist,
-                            searchTrack.name
-                        );
-                    }
-
-                    return song;
-                }
-            } catch (err) {
-                console.error('Failed to fetch track info for', searchTrack.name, err);
-            }
-            return null;
-        }));
-
-        return songs.filter(song => song !== null);
-    }
-
-    /**
-     * Last.fm 搜不到时的兜底数据源：iTunes 搜索接口不需要 key，结果自带封面。
-     *
-     * @param {string} query
-     * @param {number} limit
-     * @returns {Promise<Song[]>}
-     */
-    async searchItunes(query, limit = 6) {
         try {
-            const params = new URLSearchParams({
-                term: query,
-                media: 'music',
-                entity: 'song',
-                limit: String(limit),
-                country: 'HK',
-            });
-            const response = await fetch(
-                `https://itunes.apple.com/search?${params}`
-            );
+            const response = await fetch(`https://itunes.apple.com/search?${params}`);
 
             if (!response.ok) {
-                return [];
+                throw new Error(`iTunes Search returned HTTP ${response.status}`);
             }
 
             const result = await response.json();
-            const items = Array.isArray(result?.results) ? result.results : [];
-
-            return items.map(
-                (item) =>
-                    new Song({
-                        name: item.trackName,
-                        duration: item.trackTimeMillis,
-                        artist: { name: item.artistName },
-                        album: {
-                            image: item.artworkUrl100
-                                ? [0, 1, 2, 3].map(() => ({
-                                      '#text': item.artworkUrl100.replace(
-                                          /\d+x\d+bb/,
-                                          '600x600bb'
-                                      ),
-                                  }))
-                                : [],
-                        },
-                    })
-            );
+            return result?.results || [];
         } catch (error) {
             console.error('iTunes search failed', error);
             return [];
@@ -115,46 +46,144 @@ class DataFetcher {
     }
 
     /**
-     * Last.fm 对相当一部分歌（尤其中文歌）没有封面：album 是 [unknown]、image 全是空串，
-     * 或者只给一张默认星星图。这种情况下改用 iTunes 的搜索结果补一张，它的
-     * artworkUrl100 换掉尺寸后缀就是 600×600，且允许跨域，能直接导出。
+     * 简体和港繁各查一遍，去重
      *
-     * @param {string} artistName
-     * @param {string} trackName
-     * @returns {Promise<string | null>}
+     * @private
+     * @param {string} query
+     * @returns {string[]}
      */
-    async getArtworkUrl(artistName, trackName) {
-        try {
-            const query = new URLSearchParams({
-                term: `${artistName} ${trackName}`,
-                media: 'music',
-                entity: 'song',
-                limit: '5',
-                country: 'HK',
-            });
-            const response = await fetch(
-                `https://itunes.apple.com/search?${query}`
+    getSearchAliases(query) {
+        return [query, this.toHongKongTraditional(query)].filter(
+            (value, index, values) => value && values.indexOf(value) === index
+        );
+    }
+
+    /**
+     * @private
+     * @param {string} value
+     * @returns {string}
+     */
+    normalize(value) {
+        return String(value || '')
+            .normalize('NFKC')
+            .trim()
+            .toLocaleLowerCase();
+    }
+
+    /**
+     * 按 trackId 去重，没有 trackId 时用「歌手 + 曲名」
+     *
+     * @private
+     * @param {object[]} tracks
+     * @returns {object[]}
+     */
+    deduplicateTracks(tracks) {
+        const seen = new Set();
+
+        return tracks.filter((track) => {
+            const key = track.trackId
+                ? String(track.trackId)
+                : `${this.normalize(track.artistName)}|${this.normalize(track.trackName)}`;
+
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+    }
+
+    /**
+     * @private
+     * @param {object} track
+     * @param {Set<string>} normalizedAliases
+     * @returns {boolean}
+     */
+    matchesTrackTitle(track, normalizedAliases) {
+        const title = this.normalize(track.trackName);
+        return [...normalizedAliases].some((alias) => title.includes(alias));
+    }
+
+    /**
+     * 把 iTunes 结果转成 Song 认识的形状（沿用原来的 album.image 结构）
+     *
+     * @private
+     * @param {object} track
+     * @returns {Song}
+     */
+    toSong(track) {
+        const artwork = String(track.artworkUrl100 || '').replace(
+            /\d+x\d+bb/,
+            '600x600bb'
+        );
+        const images = artwork ? [0, 1, 2, 3].map(() => ({ '#text': artwork })) : [];
+
+        return new Song({
+            name: track.trackName,
+            duration: track.trackTimeMillis,
+            artist: { name: track.artistName },
+            album: { image: images },
+        });
+    }
+
+    /**
+     * 搜歌。默认 general 模式：先要歌手精确命中的，再补曲名命中的。
+     *
+     * @param {string} query
+     * @param {number} limit
+     * @param {'general' | 'song' | 'artist'} mode
+     * @returns {Promise<Song[]>}
+     */
+    async getSongInfos(query, limit = 1, mode = 'general') {
+        const aliases = this.getSearchAliases(query);
+        const normalizedAliases = new Set(aliases.map((alias) => this.normalize(alias)));
+        const broadLimit = Math.min(Math.max(limit * 8, limit), 50);
+        let tracks = [];
+
+        if (mode === 'song') {
+            const resultSets = await Promise.all(
+                aliases.map((alias) => this.searchItunes(alias, 'songTerm', broadLimit))
+            );
+            tracks = this.deduplicateTracks(resultSets.flat())
+                .filter((track) => this.matchesTrackTitle(track, normalizedAliases))
+                .slice(0, limit);
+        } else if (mode === 'artist') {
+            const resultSets = await Promise.all(
+                aliases.map((alias) => this.searchItunes(alias, 'artistTerm', limit))
+            );
+            const candidates = this.deduplicateTracks(resultSets.flat());
+            const exact = candidates.filter((track) =>
+                normalizedAliases.has(this.normalize(track.artistName))
+            );
+            tracks = (exact.length ? exact : candidates).slice(0, limit);
+        } else {
+            const [artistSets, songSets] = await Promise.all([
+                Promise.all(
+                    aliases.map((alias) => this.searchItunes(alias, 'artistTerm', limit))
+                ),
+                Promise.all(
+                    aliases.map((alias) => this.searchItunes(alias, 'songTerm', broadLimit))
+                ),
+            ]);
+            const artistTracks = this.deduplicateTracks(artistSets.flat()).filter((track) =>
+                normalizedAliases.has(this.normalize(track.artistName))
             );
 
-            if (!response.ok) {
-                return null;
-            }
-
-            const result = await response.json();
-            const items = Array.isArray(result?.results) ? result.results : [];
-            const wanted = trackName.toLowerCase().trim();
-            const nameOf = (item) => (item.trackName || '').toLowerCase().trim();
-            const match =
-                items.find((item) => nameOf(item) === wanted) ||
-                items.find((item) => nameOf(item).startsWith(wanted)) ||
-                items[0];
-            const artwork = match?.artworkUrl100;
-
-            return artwork ? artwork.replace(/\d+x\d+bb/, '600x600bb') : null;
-        } catch (error) {
-            console.error('Failed to load artwork from iTunes', error);
-            return null;
+            tracks = this.deduplicateTracks([
+                ...artistTracks,
+                ...this.deduplicateTracks(songSets.flat()).filter((track) =>
+                    this.matchesTrackTitle(track, normalizedAliases)
+                ),
+            ]).slice(0, limit);
         }
+
+        // 「歌手 + 曲名」这种拼在一起的查询，加了 attribute 反而容易搜不到，
+        // 上面一条都没捞到时再用不限字段的普通搜索兜一次。
+        if (tracks.length === 0) {
+            tracks = this.deduplicateTracks(
+                await this.searchItunes(query, null, limit)
+            ).slice(0, limit);
+        }
+
+        return tracks.map((track) => this.toSong(track));
     }
 
     /**
@@ -172,8 +201,8 @@ class DataFetcher {
             return this.pickLyrics(items, trackName);
         }
 
-        // 部分 Last.fm 条目的 artist 是一整句描述（合辑、合集），拼出来的
-        // 查询必然搜不到，退一步只按歌名再查一次。
+        // 有些条目的 artist 是一整句描述（合辑、合集），拼出来的查询必然搜不到，
+        // 退一步只按歌名再查一次。
         if (artistName) {
             const byTrackName = await this.searchLyrics(trackName);
 

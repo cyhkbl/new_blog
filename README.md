@@ -272,12 +272,15 @@ excerpt: 自定义摘要           # 可选，不写自动截取
 
 ---
 
+---
+
 ## 十一、小工具（/tools）
 
 顶栏「小工具」是入口页，目前挂了一个：歌词卡片，地址是 `/lyricpost/`。
 
-这个工具是整站移植的 [palinkiewicz/lyricpost](https://github.com/palinkiewicz/lyricpost)（MIT），
-源码放在 `frontend/public/lyricpost/`，落地时基于上游提交 `36bd234`。UI 和功能保持原样，只打了下面几个补丁。
+这个工具基于 [palinkiewicz/lyricpost](https://github.com/palinkiewicz/lyricpost)（MIT，上游提交 `36bd234`），
+源码在 `frontend/public/lyricpost/`。UI 保持原样，数据源和出错路径换成了参考站
+[lijianxiong.blog/spotify](https://lijianxiong.blog/spotify/) 的做法。
 
 nginx 给它单独开了一段（服务器上的 `/etc/nginx/sites-available/cyhkbl.qzz.io`）：
 
@@ -296,23 +299,32 @@ location /lyricpost/ {
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
+### 数据源
+
+| 用途 | 接口 | 说明 |
+|---|---|---|
+| 搜歌 | iTunes Search API（`itunes.apple.com/search`，`country=HK`） | 不需要 key，每条结果自带 `artworkUrl100`，换成 `600x600bb` 当封面 |
+| 歌词 | LRCLIB（`lrclib.net/api/search`） | 免费、不需要 key |
+
+搜歌原来走 Last.fm，问题是它的公共 demo key 会限流，而且大量中文歌的 `album` 是 `[unknown]`、
+`image` 全是空串或默认星星占位图，`track.getInfo` 也补不出封面。换成 iTunes 之后这两个问题一起没了。
+
+查询会同时用简体和港繁（OpenCC）各搜一遍，复选歌手精确命中的结果，再补曲名命中的结果。
+OpenCC 的脚本从 jsdelivr 加载，加载失败会退化成只用原查询，不影响搜索。
+
 ### 本地改动的文件
 
 | 文件 | 改了什么 |
 |---|---|
-| `classes/DataFetcher.js` | 歌词请求失败（503/429/非 JSON）不再抛异常，返回 null 走原有的「没找到歌词」界面；失败后重试一次；`artist` 是一整句描述（合辑）时，退一步只按歌名再查一次。封面缺失时用 iTunes 搜索补图；Last.fm 搜歌失败或零结果时退回 iTunes 搜索 |
-| `classes/data/Song.js` | 封面取「最大的那张、跳过 Last.fm 默认星星图」，都没有就返回 null 交给上头补 |
+| `classes/DataFetcher.js` | 搜歌整体换成 iTunes（简繁双查、去重、曲名/歌手匹配，全部落空时再来一次不限字段的普通搜索）；歌词请求失败（503/429/非 JSON）不再抛异常，返回 null 走原有的「没找到歌词」界面，失败重试一次，artist 是一整句描述时退一步只按歌名再查 |
+| `classes/data/Song.js` | 封面取最大的一档并跳过 Last.fm 的星星占位图（iTunes 数据下就等于直接取 600×600） |
 | `classes/constants.js` | 新增 `TRANSPARENT_PIXEL`、`LASTFM_PLACEHOLDER_COVER` 两个常量 |
 | `classes/SongImageController.js` | 平台标签选「无」时，把 `img.src` 设成透明像素而不是空字符串 |
-| `index.html` | 四处 `<img src="">` 换成同一个透明像素 |
-| `sw.js` | `CACHE_NAME` 从 `v4` 提到 `v8` |
+| `index.html` | 引入 opencc-js；四处 `<img src="">` 换成 1×1 透明像素 |
+| `sw.js` | `CACHE_NAME` 从 `v4` 提到 `v9` |
 
 空字符串的 `src` 会被浏览器解析成当前页面地址，界面上是破图图标，html2canvas 导出时也会报 `Error loading image`，
-所以统一换成 1×1 透明像素，排版和 CSS 里的占位背景都不变。
-
-封面这一块的情况是：Last.fm 对不少中文歌根本没有图，`album` 是 `[unknown]`，`image` 全是空串或者默认星星图
-（文件名固定是 `2a96cbd8b46e442fc41c2b86b821562f`）。所以拿不到可用封面时，改查 iTunes 搜索接口
-（不需要 key），把 `artworkUrl100` 的尺寸后缀换成 `600x600bb` 当封面，`is1-ssl.mzstatic.com` 允许跨域，导出也能用。
+所以统一换成透明像素，排版和 CSS 里的占位背景都不变。
 
 ### 跟进上游新版
 
@@ -321,17 +333,17 @@ cd ~/new_blog/frontend/public
 rm -rf lyricpost
 git clone --depth 1 https://github.com/palinkiewicz/lyricpost.git lyricpost
 rm -rf lyricpost/.git lyricpost/.screenshots
-# 重新套用上表里的补丁（或先 git diff 看一遍）
+# 重新套用上表里的补丁
 cd ~/new_blog && git add -A && git commit -m "chore: bump lyricpost" && git push
 ```
 
-注意：重新克隆会覆盖补丁，改完要把 `sw.js` 的 `CACHE_NAME` 再提一个版本。
+注意：重新克隆会覆盖补丁，改完要把 `sw.js` 的 `CACHE_NAME` 再提一个版本，否则老访客继续用缓存里的旧文件。
 
 ### 其它
 
 - 它是独立的静态页面，不在 Next.js 路由里，所以入口页用的是普通 `<a href="/lyricpost/">`，不是 `next/link`。
-- 搜歌走 Last.fm API，歌词走 LRCLIB，导出用 html2canvas 截 DOM，都在浏览器里直接请求，不经过本站后端。
-- 图标字体从 Google Fonts 加载，访问者网络到不了的话，图标会退化成文字。
+- 导出用 html2canvas 截 DOM，全部在浏览器里跑，不经过本站后端。
+- 图标字体来自 Google Fonts，opencc-js 来自 jsdelivr，网络到不了的话分别会退化成文字和原查询。
 
 ---
 
@@ -351,7 +363,7 @@ python3 -m venv ~/zensical-venv
 
 ```bash
 cd ~/zensical-sites/CS-Learning
-git pull                                     # 如果是从 GitHub 拉更新
+git pull
 ~/zensical-venv/bin/zensical build --clean
 ```
 
@@ -365,3 +377,24 @@ done
 
 重建完不用重启任何服务，nginx 直接读文件。CS-Learning 仓库另外配了 GitHub Actions
 （`.github/workflows/docs.yml`），推送到 main 会自动发布到 GitHub Pages，但**不会**更新服务器上这份副本。
+
+---
+
+## 十三、Cloudflare 隧道
+
+隧道 `f47c455e-1f2b-404d-a578-3a796e8579e9`（名字 `blog`）跑在服务器上，
+**实际生效的是 Cloudflare 后台的远程配置**，`~/.cloudflared/config.yml` 里的 ingress 不生效，
+改域名要么在 Zero Trust 后台改，要么调 API：
+
+```
+PUT /accounts/<account_id>/cfd_tunnel/<tunnel_id>/configurations
+```
+
+当前对外只保留两条路由：
+
+| 主机名 | 后端 |
+|---|---|
+| `cyhkbl.qzz.io` | `http://localhost:80`（nginx） |
+| `proxy.cyhkbl.qzz.io` | `http://localhost:10000`（本机 xray） |
+
+`proxy2.cyhkbl.qzz.io` 走的是另一条隧道 `fb68c832-…`（跑在 Ubuntu 上，同样是 xray 的 10000 端口）。

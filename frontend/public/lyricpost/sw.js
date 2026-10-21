@@ -1,4 +1,4 @@
-const CACHE_NAME = 'v8';
+const CACHE_NAME = 'v9';
 
 // Paths are relative to this file's location, not the domain root: the app is
 // served from a GitHub Pages subpath (/lyricpost/), where a leading slash would
