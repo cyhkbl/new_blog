@@ -263,3 +263,32 @@ tags: [标签1, 标签2]          # 可选，标签数组
 excerpt: 自定义摘要           # 可选，不写自动截取
 ---
 ```
+
+---
+
+## 十一、小工具（/tools）
+
+顶栏「小工具」下面是自用的小工具页面。目前只有一个：歌词卡片（`/tools/lyricpost`）。
+全部是纯前端渲染，导出的图片由浏览器 Canvas 现画，歌词和封面不上传服务器。
+
+| 路径 | 作用 |
+|---|---|
+| `frontend/src/app/tools/page.tsx` | 小工具列表页 |
+| `frontend/src/components/ToolsContent.tsx` | 列表页的卡片内容 |
+| `frontend/src/app/tools/lyricpost/page.tsx` | 歌词卡片页面 |
+| `frontend/src/components/LyricPost.tsx` | 工具本体：搜歌、选行、调样式、导出 PNG |
+| `frontend/src/app/api/tools/music/route.ts` | 搜歌，走 iTunes Search，港/台/美三个店面一起查再合并 |
+| `frontend/src/app/api/tools/lyrics/route.ts` | 取歌词，走 LRCLIB |
+| `frontend/src/app/api/tools/artwork/route.ts` | 封面图代理，只放行 mzstatic.com 和 lrclib.net |
+
+要再加一个工具：
+
+1. 在 `frontend/src/app/tools/` 下新建目录和 `page.tsx`；
+2. 把新工具补进 `frontend/src/components/ToolsContent.tsx` 的 `tools` 数组；
+3. 构建并重启：
+
+```bash
+cd ~/new_blog/frontend
+pnpm build
+sudo systemctl restart blog.service
+```

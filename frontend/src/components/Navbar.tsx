@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 const navLinks = [
   { href: "/articles", label: "文章" },
   { href: "/Scholar", label: "Scholar" },
+  { href: "/tools", label: "小工具" },
   { href: "/about", label: "关于我" },
   { href: "/sites", label: "Links" },
 ];
