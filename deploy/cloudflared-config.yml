@@ -1,0 +1,14 @@
+tunnel: f47c455e-1f2b-404d-a578-3a796e8579e9
+credentials-file: /home/henry/.cloudflared/f47c455e-1f2b-404d-a578-3a796e8579e9.json
+ingress:
+- hostname: cyhkbl.qzz.io
+  service: http://localhost:80
+  originRequest:
+    noTLSVerify: true
+    keepAliveConnections: 10
+    keepAliveTimeout: 90s
+    connectTimeout: 30s
+    tcpKeepAlive: 30s
+- hostname: proxy.cyhkbl.qzz.io
+  service: http://localhost:10000
+- service: http_status:404

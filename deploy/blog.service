@@ -1,0 +1,17 @@
+# /etc/systemd/system/blog.service
+[Unit]
+Description=Next.js Blog
+After=network.target
+
+[Service]
+Type=simple
+User=henry
+WorkingDirectory=/home/henry/new_blog/frontend
+ExecStart=/home/henry/new_blog/frontend/node_modules/.bin/next start
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target
