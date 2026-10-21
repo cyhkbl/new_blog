@@ -14,7 +14,7 @@ class Song {
         this.artists = songInfo.artist ? [new Artist({ name: songInfo.artist.name })] : [];
 
         /** @type {string} */
-        this.albumCoverUrl = songInfo.album?.image?.[2]?.['#text'] || songInfo.album?.image?.[1]?.['#text'] || songInfo.album?.image?.[0]?.['#text'] || null;
+        this.albumCoverUrl = this.pickCover(songInfo.album);
 
         /** @type {bool} */
         this.hasSyncedLyrics = lyrics?.syncedLyrics ? true : false;
@@ -24,6 +24,25 @@ class Song {
             ?.replace(/\n+/g, '\n')
             ?.split('\n')
             ?.map((lyric) => new Lyric(lyric));
+    }
+
+    /**
+     * Picks the largest cover Last.fm returned, skipping its placeholder star.
+     * Returns null when there is nothing usable, so the caller can look the
+     * artwork up somewhere else.
+     *
+     * @param {object} album
+     * @returns {string | null}
+     */
+    pickCover(album) {
+        const images = Array.isArray(album?.image) ? album.image : [];
+        const urls = images
+            .map((image) => image?.['#text'])
+            .filter(
+                (url) => url && !url.includes(LASTFM_PLACEHOLDER_COVER)
+            );
+
+        return urls.length > 0 ? urls[urls.length - 1] : null;
     }
 
     /**

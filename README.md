@@ -270,6 +270,8 @@ excerpt: 自定义摘要           # 可选，不写自动截取
 
 ---
 
+---
+
 ## 十一、小工具（/tools）
 
 顶栏「小工具」是入口页，目前挂了一个：歌词卡片，地址是 `/lyricpost/`。
@@ -298,14 +300,19 @@ sudo nginx -t && sudo systemctl reload nginx
 
 | 文件 | 改了什么 |
 |---|---|
-| `classes/DataFetcher.js` | 歌词请求失败（503/429/非 JSON）不再抛异常，返回 null 走原有的「没找到歌词」界面；失败后重试一次；`artist` 是一整句描述（合辑）时，退一步只按歌名再查一次 |
-| `classes/constants.js` | 新增 `TRANSPARENT_PIXEL` 常量 |
+| `classes/DataFetcher.js` | 歌词请求失败（503/429/非 JSON）不再抛异常，返回 null 走原有的「没找到歌词」界面；失败后重试一次；`artist` 是一整句描述（合辑）时，退一步只按歌名再查一次。封面缺失时用 iTunes 搜索补图；Last.fm 搜歌失败或零结果时退回 iTunes 搜索 |
+| `classes/data/Song.js` | 封面取「最大的那张、跳过 Last.fm 默认星星图」，都没有就返回 null 交给上头补 |
+| `classes/constants.js` | 新增 `TRANSPARENT_PIXEL`、`LASTFM_PLACEHOLDER_COVER` 两个常量 |
 | `classes/SongImageController.js` | 平台标签选「无」时，把 `img.src` 设成透明像素而不是空字符串 |
 | `index.html` | 四处 `<img src="">` 换成同一个透明像素 |
-| `sw.js` | `CACHE_NAME` 从 `v4` 提到 `v6` |
+| `sw.js` | `CACHE_NAME` 从 `v4` 提到 `v8` |
 
 空字符串的 `src` 会被浏览器解析成当前页面地址，界面上是破图图标，html2canvas 导出时也会报 `Error loading image`，
 所以统一换成 1×1 透明像素，排版和 CSS 里的占位背景都不变。
+
+封面这一块的情况是：Last.fm 对不少中文歌根本没有图，`album` 是 `[unknown]`，`image` 全是空串或者默认星星图
+（文件名固定是 `2a96cbd8b46e442fc41c2b86b821562f`）。所以拿不到可用封面时，改查 iTunes 搜索接口
+（不需要 key），把 `artworkUrl100` 的尺寸后缀换成 `600x600bb` 当封面，`is1-ssl.mzstatic.com` 允许跨域，导出也能用。
 
 ### 跟进上游新版
 
