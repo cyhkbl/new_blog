@@ -332,3 +332,36 @@ cd ~/new_blog && git add -A && git commit -m "chore: bump lyricpost" && git push
 - 它是独立的静态页面，不在 Next.js 路由里，所以入口页用的是普通 `<a href="/lyricpost/">`，不是 `next/link`。
 - 搜歌走 Last.fm API，歌词走 LRCLIB，导出用 html2canvas 截 DOM，都在浏览器里直接请求，不经过本站后端。
 - 图标字体从 Google Fonts 加载，访问者网络到不了的话，图标会退化成文字。
+
+---
+
+## 十二、静态子站（zensical）
+
+`/Finance-Learning/`、`/CS-Learning/`、`/Life/` 三个站是 zensical 生成的静态页面，
+源码在 `~/zensical-sites/<名字>/`，nginx 直接把 `alias` 指到各自的 `site/` 目录。
+
+zensical 装在独立 venv 里（系统 Python 是 3.11，别用系统 pip 装）：
+
+```bash
+python3 -m venv ~/zensical-venv
+~/zensical-venv/bin/pip install -U zensical
+```
+
+重建某个站：
+
+```bash
+cd ~/zensical-sites/CS-Learning
+git pull                                     # 如果是从 GitHub 拉更新
+~/zensical-venv/bin/zensical build --clean
+```
+
+三个一起重建：
+
+```bash
+for s in Finance-Learning CS-Learning Life; do
+  cd ~/zensical-sites/$s && ~/zensical-venv/bin/zensical build --clean
+done
+```
+
+重建完不用重启任何服务，nginx 直接读文件。CS-Learning 仓库另外配了 GitHub Actions
+（`.github/workflows/docs.yml`），推送到 main 会自动发布到 GitHub Pages，但**不会**更新服务器上这份副本。
