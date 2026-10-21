@@ -266,29 +266,46 @@ excerpt: 自定义摘要           # 可选，不写自动截取
 
 ---
 
+---
+
 ## 十一、小工具（/tools）
 
-顶栏「小工具」下面是自用的小工具页面。目前只有一个：歌词卡片（`/tools/lyricpost`）。
-全部是纯前端渲染，导出的图片由浏览器 Canvas 现画，歌词和封面不上传服务器。
+顶栏「小工具」是入口页，目前挂了一个：歌词卡片，地址是 `/lyricpost/`。
 
-| 路径 | 作用 |
-|---|---|
-| `frontend/src/app/tools/page.tsx` | 小工具列表页 |
-| `frontend/src/components/ToolsContent.tsx` | 列表页的卡片内容 |
-| `frontend/src/app/tools/lyricpost/page.tsx` | 歌词卡片页面 |
-| `frontend/src/components/LyricPost.tsx` | 工具本体：搜歌、选行、调样式、导出 PNG |
-| `frontend/src/app/api/tools/music/route.ts` | 搜歌，走 iTunes Search，港/台/美三个店面一起查再合并 |
-| `frontend/src/app/api/tools/lyrics/route.ts` | 取歌词，走 LRCLIB |
-| `frontend/src/app/api/tools/artwork/route.ts` | 封面图代理，只放行 mzstatic.com 和 lrclib.net |
+这个工具是整站移植的 [palinkiewicz/lyricpost](https://github.com/palinkiewicz/lyricpost)（MIT），
+源码原样放在 `frontend/public/lyricpost/`，一行没改。落地时的上游提交：`36bd234`。
 
-要再加一个工具：
+nginx 给它单独开了一段（服务器上的 `/etc/nginx/sites-available/cyhkbl.qzz.io`）：
 
-1. 在 `frontend/src/app/tools/` 下新建目录和 `page.tsx`；
-2. 把新工具补进 `frontend/src/components/ToolsContent.tsx` 的 `tools` 数组；
-3. 构建并重启：
+```nginx
+# LyricPost 小工具（原版静态应用，palinkiewicz/lyricpost，MIT）
+location = /lyricpost { return 301 /lyricpost/; }
+location /lyricpost/ {
+    alias /home/henry/new_blog/frontend/public/lyricpost/;
+    index index.html;
+}
+```
+
+改完执行：
 
 ```bash
-cd ~/new_blog/frontend
-pnpm build
-sudo systemctl restart blog.service
+sudo nginx -t && sudo systemctl reload nginx
 ```
+
+跟进上游新版：
+
+```bash
+cd ~/new_blog/frontend/public
+rm -rf lyricpost
+git clone --depth 1 https://github.com/palinkiewicz/lyricpost.git lyricpost
+rm -rf lyricpost/.git lyricpost/.screenshots
+
+cd ~/new_blog
+git add -A && git commit -m "chore: bump lyricpost" && git push
+```
+
+几点说明：
+
+- 它是独立的静态页面，不在 Next.js 路由里，所以入口页用的是普通 `<a href="/lyricpost/">`，不是 `next/link`。
+- 搜歌走 Last.fm API，歌词走 LRCLIB，导出用 html2canvas 截 DOM，这些都在浏览器里直接请求，不经过本站后端。
+- 图标字体从 Google Fonts 加载，访问者网络到不了的话，图标会退化成文字。

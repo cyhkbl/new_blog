@@ -1,10 +1,9 @@
-import Link from "next/link";
-
 const tools = [
   {
-    href: "/tools/lyricpost",
+    href: "/lyricpost/",
     title: "歌词卡片",
-    description: "搜一首歌，挑几句歌词，做成 4:5 或 1:1 的图片。可以换字体、底图、圆角和平台标签。",
+    description:
+      "整站移植的 LyricPost：搜歌、挑歌词句子，调配色、字体、圆角、模糊和平台标志，最后导出图片。",
     tag: "图片",
   },
 ];
@@ -22,7 +21,7 @@ export default function ToolsContent() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         {tools.map((tool) => (
-          <Link
+          <a
             key={tool.href}
             href={tool.href}
             className="glass group flex flex-col gap-2 p-5 transition">
@@ -38,9 +37,21 @@ export default function ToolsContent() {
             <span className="mt-1 text-xs text-[var(--text-secondary)] underline underline-offset-4">
               打开
             </span>
-          </Link>
+          </a>
         ))}
       </div>
+
+      <p className="text-xs text-[var(--text-secondary)]">
+        歌词卡片来自{" "}
+        <a
+          href="https://github.com/palinkiewicz/lyricpost"
+          target="_blank"
+          rel="noreferrer"
+          className="underline underline-offset-4">
+          palinkiewicz/lyricpost
+        </a>
+        （MIT），整个站点原样搬过来跑，没有改动。
+      </p>
     </div>
   );
 }
