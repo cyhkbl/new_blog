@@ -978,7 +978,7 @@ class SongImageController {
         }
 
         if (value === 'none') {
-            img.setAttribute('src', '');
+            img.setAttribute('src', TRANSPARENT_PIXEL);
             return;
         }
 

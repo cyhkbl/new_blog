@@ -268,12 +268,14 @@ excerpt: 自定义摘要           # 可选，不写自动截取
 
 ---
 
+---
+
 ## 十一、小工具（/tools）
 
 顶栏「小工具」是入口页，目前挂了一个：歌词卡片，地址是 `/lyricpost/`。
 
 这个工具是整站移植的 [palinkiewicz/lyricpost](https://github.com/palinkiewicz/lyricpost)（MIT），
-源码原样放在 `frontend/public/lyricpost/`，一行没改。落地时的上游提交：`36bd234`。
+源码放在 `frontend/public/lyricpost/`，落地时基于上游提交 `36bd234`。UI 和功能保持原样，只打了下面几个补丁。
 
 nginx 给它单独开了一段（服务器上的 `/etc/nginx/sites-available/cyhkbl.qzz.io`）：
 
@@ -292,20 +294,34 @@ location /lyricpost/ {
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
-跟进上游新版：
+### 本地改动的文件
+
+| 文件 | 改了什么 |
+|---|---|
+| `classes/DataFetcher.js` | 歌词请求失败（503/429/非 JSON）不再抛异常，返回 null 走原有的「没找到歌词」界面；失败后重试一次；`artist` 是一整句描述（合辑）时，退一步只按歌名再查一次 |
+| `classes/constants.js` | 新增 `TRANSPARENT_PIXEL` 常量 |
+| `classes/SongImageController.js` | 平台标签选「无」时，把 `img.src` 设成透明像素而不是空字符串 |
+| `index.html` | 四处 `<img src="">` 换成同一个透明像素 |
+| `sw.js` | `CACHE_NAME` 从 `v4` 提到 `v6` |
+
+空字符串的 `src` 会被浏览器解析成当前页面地址，界面上是破图图标，html2canvas 导出时也会报 `Error loading image`，
+所以统一换成 1×1 透明像素，排版和 CSS 里的占位背景都不变。
+
+### 跟进上游新版
 
 ```bash
 cd ~/new_blog/frontend/public
 rm -rf lyricpost
 git clone --depth 1 https://github.com/palinkiewicz/lyricpost.git lyricpost
 rm -rf lyricpost/.git lyricpost/.screenshots
-
-cd ~/new_blog
-git add -A && git commit -m "chore: bump lyricpost" && git push
+# 重新套用上表里的补丁（或先 git diff 看一遍）
+cd ~/new_blog && git add -A && git commit -m "chore: bump lyricpost" && git push
 ```
 
-几点说明：
+注意：重新克隆会覆盖补丁，改完要把 `sw.js` 的 `CACHE_NAME` 再提一个版本。
+
+### 其它
 
 - 它是独立的静态页面，不在 Next.js 路由里，所以入口页用的是普通 `<a href="/lyricpost/">`，不是 `next/link`。
-- 搜歌走 Last.fm API，歌词走 LRCLIB，导出用 html2canvas 截 DOM，这些都在浏览器里直接请求，不经过本站后端。
+- 搜歌走 Last.fm API，歌词走 LRCLIB，导出用 html2canvas 截 DOM，都在浏览器里直接请求，不经过本站后端。
 - 图标字体从 Google Fonts 加载，访问者网络到不了的话，图标会退化成文字。

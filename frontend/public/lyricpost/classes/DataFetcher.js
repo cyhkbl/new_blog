@@ -52,21 +52,75 @@ class DataFetcher {
      * @returns {object} song lyrics object
      */
     async getSongLyrics(artistName, trackName) {
-        const response = await fetch(
-            `https://lrclib.net/api/search?q=${artistName} ${trackName}`,
-            {
-                method: 'GET',
+        const items = await this.searchLyrics(`${artistName} ${trackName}`);
+
+        if (items.length > 0) {
+            return this.pickLyrics(items, trackName);
+        }
+
+        // 部分 Last.fm 条目的 artist 是一整句描述（合辑、合集），拼出来的
+        // 查询必然搜不到，退一步只按歌名再查一次。
+        if (artistName) {
+            const byTrackName = await this.searchLyrics(trackName);
+
+            if (byTrackName.length > 0) {
+                return this.pickLyrics(byTrackName, trackName);
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Calls lrclib's search endpoint. Always resolves to an array: a 5xx/429
+     * answer or a non-JSON body must not break the wizard, and a transient
+     * failure gets one retry.
+     *
+     * @private
+     * @param {string} query
+     * @returns {Promise<object[]>}
+     */
+    async searchLyrics(query) {
+        for (let attempt = 0; attempt < 2; attempt++) {
+            try {
+                const response = await fetch(
+                    `https://lrclib.net/api/search?q=${encodeURIComponent(query)}`,
+                    {
+                        method: 'GET',
+                    }
+                );
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    return Array.isArray(result) ? result : [];
+                }
+            } catch (error) {
+                // 网络错误也走下面的重试
+            }
+
+            if (attempt === 0) {
+                await new Promise((resolve) => setTimeout(resolve, 700));
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * Picks the result whose track name matches, falling back to the first one.
+     *
+     * @private
+     * @param {object[]} items
+     * @param {string} trackName
+     * @returns {object | null}
+     */
+    pickLyrics(items, trackName) {
+        const wanted = trackName.toLowerCase().trim();
+        const exact = items.find(
+            (data) => (data?.trackName ?? '').toLowerCase().trim() === wanted
         );
 
-        const result = await response.json();
-
-        const filteredResult = result.filter(
-            (data) =>
-                data.trackName.toLowerCase().trim() ===
-                trackName.toLowerCase().trim()
-        );
-
-        return filteredResult[0] ?? result[0] ?? null;
+        return exact ?? items[0] ?? null;
     }
 }

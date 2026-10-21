@@ -13,6 +13,10 @@ const SPOTIFY_LOGO =
     'https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg';
 const APPLE_MUSIC_LOGO =
     'https://upload.wikimedia.org/wikipedia/commons/9/9d/AppleMusic_2019.svg';
+// 1x1 透明像素。`<img src="">` 会被解析成当前页面地址，浏览器画出破图图标，
+// html2canvas 导出时也会把它当成一张加载失败的图片，所以空图位一律用它顶替。
+const TRANSPARENT_PIXEL =
+    'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 const FONT_STACKS = {
     default: '',
